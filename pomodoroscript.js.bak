@@ -1,0 +1,170 @@
+const workTitle = document.getElementById('work');
+const breakTitle = document.getElementById('break');
+const longBreakTitle = document.getElementById('longBreak');
+const minutesDisplay = document.getElementById('minutes');
+const secondsDisplay = document.getElementById('seconds');
+
+const startBtn = document.getElementById('start');
+const pauseBtn = document.getElementById('pause');
+const resetBtn = document.getElementById('reset');
+
+const workInput = document.getElementById('workInput');
+const breakInput = document.getElementById('breakInput');
+const longBreakInput = document.getElementById('longBreakInput');
+
+const alarmSound = document.getElementById('alarmSound');
+
+let timer = null;
+let isRunning = false;
+let mode = 'work';
+let workSessions = 0;
+
+let minutes = null;
+let seconds = null;
+
+function updateDisplay(mins, secs) {
+  minutesDisplay.textContent = String(Math.max(0, mins)).padStart(2, '0');
+  secondsDisplay.textContent = String(Math.max(0, secs)).padStart(2, '0');
+}
+
+function getDurations() {
+  return {
+    workTime: parseInt(workInput.value) || 25,
+    breakTime: parseInt(breakInput.value) || 5,
+    longBreakTime: parseInt(longBreakInput.value) || 15
+  };
+}
+
+function setActiveTab(tab) {
+  workTitle.classList.remove('active');
+  breakTitle.classList.remove('active');
+  longBreakTitle.classList.remove('active');
+  if (tab === 'work') workTitle.classList.add('active');
+  if (tab === 'break') breakTitle.classList.add('active');
+  if (tab === 'longBreak') longBreakTitle.classList.add('active');
+}
+
+function startTimer() {
+  if (isRunning) return;
+  clearInterval(timer);
+
+  const { workTime, breakTime, longBreakTime } = getDurations();
+
+  if (minutes === null || seconds === null) {
+    minutes =
+      mode === 'work' ? workTime :
+      mode === 'break' ? breakTime : longBreakTime;
+    minutes -= 1;
+    seconds = 59;
+  }
+
+  isRunning = true;
+  startBtn.classList.add('hidden');
+  resetBtn.classList.remove('hidden');
+
+  timer = setInterval(() => {
+    updateDisplay(minutes, seconds);
+    seconds -= 1;
+
+    if (seconds < 0) {
+      minutes -= 1;
+      seconds = 59;
+    }
+
+    if (minutes < 0) {
+      clearInterval(timer);
+      isRunning = false;
+
+      try { alarmSound.play(); } catch (_) {}
+
+      if (mode === 'work') {
+        workSessions += 1;
+        mode = (workSessions % 4 === 0) ? 'longBreak' : 'break';
+      } else {
+        mode = 'work';
+      }
+
+      setActiveTab(mode);
+
+      const nextMinutes =
+        mode === 'work' ? workTime :
+        mode === 'break' ? breakTime : longBreakTime;
+      minutes = null;
+      seconds = null;
+      updateDisplay(nextMinutes, 0);
+
+      startBtn.classList.remove('hidden');
+      resetBtn.classList.add('hidden');
+    }
+  }, 1000);
+}
+
+function pauseTimer() {
+  if (!isRunning) return;
+  clearInterval(timer);
+  isRunning = false;
+
+  updateDisplay(minutes, seconds);
+}
+
+function resetTimer() {
+  clearInterval(timer);
+  isRunning = false;
+  mode = 'work';
+  setActiveTab('work');
+
+  const { workTime } = getDurations();
+  minutes = null;
+  seconds = null;
+
+  updateDisplay(workTime, 0);
+  startBtn.classList.remove('hidden');
+  resetBtn.classList.add('hidden');
+
+  if (alarmSound) {
+    alarmSound.pause();
+    alarmSound.currentTime = 0;
+  }
+}
+
+startBtn.addEventListener('click', startTimer);
+pauseBtn.addEventListener('click', pauseTimer);
+resetBtn.addEventListener('click', resetTimer);
+
+workTitle.addEventListener('click', () => {
+  clearInterval(timer);
+  isRunning = false;
+  mode = 'work';
+  setActiveTab('work');
+
+  const { workTime } = getDurations();
+  minutes = null;
+  seconds = null;
+  updateDisplay(workTime, 0);
+});
+
+breakTitle.addEventListener('click', () => {
+  clearInterval(timer);
+  isRunning = false;
+  mode = 'break';
+  setActiveTab('break');
+
+  const { breakTime } = getDurations();
+  minutes = null;
+  seconds = null;
+  updateDisplay(breakTime, 0);
+});
+
+longBreakTitle.addEventListener('click', () => {
+  clearInterval(timer);
+  isRunning = false;
+  mode = 'longBreak';
+  setActiveTab('longBreak');
+
+  const { longBreakTime } = getDurations();
+  minutes = null;
+  seconds = null;
+  updateDisplay(longBreakTime, 0);
+});
+
+updateDisplay(parseInt(workInput.value) || 25, 0);
