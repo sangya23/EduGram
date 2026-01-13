@@ -6,10 +6,9 @@ async function post(data){
     }).then(res=>res.json());
 }
 
-/* ========= SUBJECT CACHE ========= */
+
 let subjectColors = {};
 
-/* ========= SUBJECTS ========= */
 async function loadSubjects(){
     const subjects = await post({action:"get_subjects"});
 
@@ -44,7 +43,7 @@ async function addSubject(){
     newSubjectName.value="";
     closeSubjectPopup();
     loadSubjects();
-    loadTasks(); 
+    loadTasks(); // refresh tasks to get colors
 }
 
 async function deleteSubject(id){
@@ -115,6 +114,7 @@ async function deleteTask(id){
     loadTasks();
 }
 
+/* ========= POPUP ========= */
 function openSubjectPopup(){
     subjectOverlay.classList.add("active");
     subjectCard.classList.add("active");
@@ -132,11 +132,98 @@ function toggleMenu(button){
     menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
 }
 
+// Close dropdown if clicked outside
 document.addEventListener('click', e => {
     if(!e.target.classList.contains('more-btn')){
         document.querySelectorAll('.dropdown-menu').forEach(m => m.style.display='none');
     }
 });
 
+function switchPage(page) {
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+    });
+    event.target.closest('.nav-item').classList.add('active');
+    loadPage(page);
+}
+
+function loadPage(page) {
+    const contentArea = document.getElementById('contentArea');
+    
+    const pages = {
+        home: `
+            <div class="page-header">
+                <h1>Welcome to Edu-gram, ${currentUser.name}! 🎉</h1>
+                <p>Your personalized dashboard to manage your studies effectively.</p>
+            </div>
+        `,
+        assignments: `
+            <div class="page-header">
+                <h1>Assignment Tracker 📝</h1>
+                <p>Manage and track your assignments</p>
+            </div>
+            <div class="content-placeholder">
+                <i class="fas fa-tasks placeholder-icon"></i>
+                <p>Assignment tracking features coming soon...</p>
+            </div>
+        `,
+        exams: `
+            <div class="page-header">
+                <h1>Exam Tracker 🎓</h1>
+                <p>Keep track of your upcoming exams</p>
+            </div>
+            <div class="content-placeholder">
+                <i class="fas fa-graduation-cap placeholder-icon"></i>
+                <p>Exam tracking features coming soon...</p>
+            </div>
+        `,
+        pomodoro: `
+            <div class="page-header">
+                <h1>Pomodoro Timer ⏰</h1>
+                <p>Boost your productivity with focused study sessions</p>
+            </div>
+            <div class="content-placeholder">
+                <i class="fas fa-clock placeholder-icon"></i>
+                <p>Pomodoro timer coming soon...</p>
+            </div>
+        `,
+        todo: `
+            <div class="page-header">
+                <h1>To-Do List ✅</h1>
+                <p>Organize your daily tasks</p>
+            </div>
+            <div class="content-placeholder">
+                <i class="fas fa-list-check placeholder-icon"></i>
+                <p>To-Do list features coming soon...</p>
+            </div>
+        `,
+        profile: `
+            <div class="page-header">
+                <h1>Profile 👤</h1>
+                <p>Manage your account settings</p>
+            </div>
+            <div class="profile-card">
+                <div class="profile-avatar-large">
+                    <i class="fas fa-user"></i>
+                </div>
+                <h2>${currentUser.name}</h2>
+                <p>${currentUser.email}</p>
+            </div>
+        `,
+        help: `
+            <div class="page-header">
+                <h1>Help & Support 🆘</h1>
+                <p>Get assistance and learn how to use Edu-gram</p>
+            </div>
+            <div class="content-placeholder">
+                <i class="fas fa-question-circle placeholder-icon"></i>
+                <p>Help documentation coming soon...</p>
+            </div>
+        `
+    };
+    
+    contentArea.innerHTML = pages[page] || pages.home;
+}
+/* ========= INIT ========= */
 loadSubjects();
 loadTasks();

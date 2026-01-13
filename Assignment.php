@@ -116,13 +116,13 @@ if (isset($_POST['action'])) {
             <h1>Edu-gram</h1>
         </div>
         <nav class="sidebar-nav">
-            <div class="nav-item active" onclick="switchPage('home')">
+            <div class="nav-item" onclick="switchPage('home')">
                 <i class="fas fa-home"></i>
                 <span>Home</span>
             </div>
-            <div class="nav-item" onclick="switchPage('assignments')">
+            <div class="nav-item active" onclick="switchPage('assignments')">
                 <i class="fas fa-tasks"></i>
-                <span>Assignments</span>
+                <a href="Assignment.php" style="text-decoration:none;color:inherit;">Assignments</a>
             </div>
             <div class="nav-item" onclick="switchPage('exams')">
                 <i class="fas fa-graduation-cap"></i>
@@ -135,6 +135,10 @@ if (isset($_POST['action'])) {
             <div class="nav-item" onclick="switchPage('todo')">
                 <i class="fas fa-list-check"></i>
                 <span>To-Do List</span>
+            </div>
+            <div class="nav-item" >
+                <i class="fas fa-lightbulb"></i>
+                <a href="Techniques.php" style="text-decoration:none;color:inherit;">Techniques</a>
             </div>
             <div class="nav-item" onclick="switchPage('profile')">
                 <i class="fas fa-user"></i>
