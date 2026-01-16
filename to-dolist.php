@@ -17,7 +17,7 @@
         <i class="fas fa-home"></i>
         <span>Home</span>
     </a>
-    <a class="nav-item" href="#">
+    <a class="nav-item" href="Assignment.php">
         <i class="fas fa-file-alt"></i>
         <span>Assignments</span>
     </a>
@@ -25,13 +25,17 @@
         <i class="fas fa-clipboard-list"></i>
         <span>Exams</span>
     </a>
-    <a class="nav-item" href="#">
+    <a class="nav-item" href="pomodoroindex.php">
         <i class="fas fa-clock"></i>
         <span>Pomodoro Timer</span>
     </a>
     <a class="nav-item active" href="to-dolist.php">
         <i class="fas fa-tasks"></i>
         <span>To-Do List</span>
+    </a>
+    <a class="nav-item" href="Techniques.php">
+        <i class="fas fa-lightbulb"></i>
+        <span>Techniques</span>
     </a>
     <a class="nav-item " href="profile.php">
         <i class="fas fa-user"></i>

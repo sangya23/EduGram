@@ -16,44 +16,46 @@
         <div class="sidebar-header">
             <h1>Edu-gram</h1>
         </div>
-        <nav class="sidebar-nav">
-            <div class="nav-item" onclick="switchPage('home')">
+        <div class="sidebar-nav">
+            <a class="nav-item" href="#">
                 <i class="fas fa-home"></i>
                 <span>Home</span>
-            </div>
-            <div class="nav-item">
-                <i class="fas fa-tasks"></i>
-                <a href="Assignment.php" style="text-decoration:none;color:inherit;">Assignments</a>
-            </div>
-            <div class="nav-item" onclick="switchPage('exams')">
-                <i class="fas fa-graduation-cap"></i>
+            </a>
+            <a class="nav-item" href="Assignment.php">
+                <i class="fas fa-file-alt"></i>
+                <span>Assignments</span>
+            </a>
+            <a class="nav-item" href="#">
+                <i class="fas fa-clipboard-list"></i>
                 <span>Exams</span>
-            </div>
-            <div class="nav-item" onclick="switchPage('pomodoro')">
+            </a>
+            <a class="nav-item" href="pomodoroindex.php">
                 <i class="fas fa-clock"></i>
                 <span>Pomodoro Timer</span>
-            </div>
-            <div class="nav-item" onclick="switchPage('todo')">
-                <i class="fas fa-list-check"></i>
+            </a>
+            <a class="nav-item" href="to-dolist.php">
+                <i class="fas fa-tasks"></i>
                 <span>To-Do List</span>
-            </div>
-            <div class="nav-item active" >
+            </a>
+            <a class="nav-item active" href="Techniques.php">
                 <i class="fas fa-lightbulb"></i>
-                <a href="Techniques.php" style="text-decoration:none;color:inherit;">Techniques</a>
-            </div>
-            <div class="nav-item" onclick="switchPage('profile')">
+                <span>Techniques</span>
+            </a>
+            <a class="nav-item " href="profile.php">
                 <i class="fas fa-user"></i>
                 <span>Profile</span>
-            </div>
-            <div class="nav-item" onclick="switchPage('help')">
+            </a>
+            <a class="nav-item" href="#">
                 <i class="fas fa-question-circle"></i>
                 <span>Help</span>
-            </div>
-            <div class="nav-item" onclick="handleLogout()">
+            </a>
+        </div>
+        <div class="sidebar-footer">
+            <a class="nav-item" href="#">
                 <i class="fas fa-sign-out-alt"></i>
                 <span>Logout</span>
-            </div>
-        </nav>
+            </a>
+        </div>
 
     </aside>
     
@@ -215,91 +217,6 @@
         card.classList.toggle("flipped");
     }
 
-    function switchPage(page) {
-    document.querySelectorAll('.nav-item').forEach(item => {
-        item.classList.remove('active');
-    });
-    event.target.closest('.nav-item').classList.add('active');
-    loadPage(page);
-}
-
-function loadPage(page) {
-    const contentArea = document.getElementById('contentArea');
-    
-    const pages = {
-        home: `
-            <div class="page-header">
-                <h1>Welcome to Edu-gram, ${currentUser.name}! 🎉</h1>
-                <p>Your personalized dashboard to manage your studies effectively.</p>
-            </div>
-        `,
-        assignments: `
-            <div class="page-header">
-                <h1>Assignment Tracker 📝</h1>
-                <p>Manage and track your assignments</p>
-            </div>
-            <div class="content-placeholder">
-                <i class="fas fa-tasks placeholder-icon"></i>
-                <p>Assignment tracking features coming soon...</p>
-            </div>
-        `,
-        exams: `
-            <div class="page-header">
-                <h1>Exam Tracker 🎓</h1>
-                <p>Keep track of your upcoming exams</p>
-            </div>
-            <div class="content-placeholder">
-                <i class="fas fa-graduation-cap placeholder-icon"></i>
-                <p>Exam tracking features coming soon...</p>
-            </div>
-        `,
-        pomodoro: `
-            <div class="page-header">
-                <h1>Pomodoro Timer ⏰</h1>
-                <p>Boost your productivity with focused study sessions</p>
-            </div>
-            <div class="content-placeholder">
-                <i class="fas fa-clock placeholder-icon"></i>
-                <p>Pomodoro timer coming soon...</p>
-            </div>
-        `,
-        todo: `
-            <div class="page-header">
-                <h1>To-Do List ✅</h1>
-                <p>Organize your daily tasks</p>
-            </div>
-            <div class="content-placeholder">
-                <i class="fas fa-list-check placeholder-icon"></i>
-                <p>To-Do list features coming soon...</p>
-            </div>
-        `,
-        profile: `
-            <div class="page-header">
-                <h1>Profile 👤</h1>
-                <p>Manage your account settings</p>
-            </div>
-            <div class="profile-card">
-                <div class="profile-avatar-large">
-                    <i class="fas fa-user"></i>
-                </div>
-                <h2>${currentUser.name}</h2>
-                <p>${currentUser.email}</p>
-            </div>
-        `,
-        help: `
-            <div class="page-header">
-                <h1>Help & Support 🆘</h1>
-                <p>Get assistance and learn how to use Edu-gram</p>
-            </div>
-            <div class="content-placeholder">
-                <i class="fas fa-question-circle placeholder-icon"></i>
-                <p>Help documentation coming soon...</p>
-            </div>
-        `
-    };
-    
-    contentArea.innerHTML = pages[page] || pages.home;
-}
 </script>
 
 </body>

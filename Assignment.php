@@ -105,7 +105,7 @@ if (isset($_POST['action'])) {
 
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap">
-     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="assignmentstyle.css" />
 </head>
 <body>
@@ -115,44 +115,46 @@ if (isset($_POST['action'])) {
         <div class="sidebar-header">
             <h1>Edu-gram</h1>
         </div>
-        <nav class="sidebar-nav">
-            <div class="nav-item" onclick="switchPage('home')">
+        <div class="sidebar-nav">
+            <a class="nav-item" href="#">
                 <i class="fas fa-home"></i>
                 <span>Home</span>
-            </div>
-            <div class="nav-item active" onclick="switchPage('assignments')">
-                <i class="fas fa-tasks"></i>
-                <a href="Assignment.php" style="text-decoration:none;color:inherit;">Assignments</a>
-            </div>
-            <div class="nav-item" onclick="switchPage('exams')">
-                <i class="fas fa-graduation-cap"></i>
+            </a>
+            <a class="nav-item active" href="Assignment.php">
+                <i class="fas fa-file-alt"></i>
+                <span>Assignments</span>
+            </a>
+            <a class="nav-item" href="#">
+                <i class="fas fa-clipboard-list"></i>
                 <span>Exams</span>
-            </div>
-            <div class="nav-item" onclick="switchPage('pomodoro')">
+            </a>
+            <a class="nav-item" href="pomodoroindex.php">
                 <i class="fas fa-clock"></i>
                 <span>Pomodoro Timer</span>
-            </div>
-            <div class="nav-item" onclick="switchPage('todo')">
-                <i class="fas fa-list-check"></i>
+            </a>
+            <a class="nav-item" href="to-dolist.php">
+                <i class="fas fa-tasks"></i>
                 <span>To-Do List</span>
-            </div>
-            <div class="nav-item" >
+            </a>
+            <a class="nav-item" href="Techniques.php">
                 <i class="fas fa-lightbulb"></i>
-                <a href="Techniques.php" style="text-decoration:none;color:inherit;">Techniques</a>
-            </div>
-            <div class="nav-item" onclick="switchPage('profile')">
+                <span>Techniques</span>
+            </a>
+            <a class="nav-item " href="profile.php">
                 <i class="fas fa-user"></i>
                 <span>Profile</span>
-            </div>
-            <div class="nav-item" onclick="switchPage('help')">
+            </a>
+            <a class="nav-item" href="#">
                 <i class="fas fa-question-circle"></i>
                 <span>Help</span>
-            </div>
-            <div class="nav-item" onclick="handleLogout()">
+            </a>
+        </div>
+        <div class="sidebar-footer">
+            <a class="nav-item" href="#">
                 <i class="fas fa-sign-out-alt"></i>
                 <span>Logout</span>
-            </div>
-        </nav>
+            </a>
+        </div>
 
     </div>
 
@@ -169,7 +171,35 @@ if (isset($_POST['action'])) {
             <input type="date" id="dueDate">
             <button class="add" onclick="addTask()">Add Assignment</button>
         </div>
-        <div id="assignedList"></div>
+        <div class="header-row" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1>Assignments</h1>
+            
+            <div class="sort-dropdown">
+                <button class="dropbtn"><i class="fas fa-sort-amount-down"></i> Sort By</button>
+                <div class="dropdown-content">
+                    <a href="#" onclick="sortTasks('subject')">Subject</a>
+                    <a href="#" onclick="sortTasks('due_date')">Due Date</a>
+                    <a href="#" onclick="sortTasks('priority')">Priority</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="assignment-sections">
+            <div class="section-container">
+                <h2 class="section-title assigned-title">Assigned 📝</h2>
+                <div id="assignedList"></div>
+            </div>
+
+            <div class="section-container">
+                <h2 class="section-title late-title">Overdue ⚠️</h2>
+                <div id="lateList"></div>
+            </div>
+
+            <div class="section-container">
+                <h2 class="section-title turnedin-title">Turned In ✅</h2>
+                <div id="turnedinList"></div>
+            </div>
+        </div>
     </div>
 
     <!-- MANAGE SUBJECT BOX -->
