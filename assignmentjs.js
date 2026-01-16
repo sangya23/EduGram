@@ -53,16 +53,39 @@ async function deleteSubject(id){
 }
 
 /* ========= TASKS ========= */
+let allTasks = []; // Global variable to store tasks
+
 async function loadTasks(){
     const tasks = await post({action:"get_tasks"});
+    allTasks = tasks; // Store the fetched tasks
+    renderTasks(allTasks); // Call a separate function to draw them
+}
+
+function renderTasks(tasksToRender) {
+    // 1. Get references to your three containers
+    const assignedList = document.getElementById("assignedList");
+    const lateList = document.getElementById("lateList");
+    const turnedinList = document.getElementById("turnedinList");
+
+    // 2. Clear all containers before re-rendering
     assignedList.innerHTML = "";
+    lateList.innerHTML = "";
+    turnedinList.innerHTML = "";
 
-    tasks.forEach(t=>{
+    tasksToRender.forEach(t => {
         const color = subjectColors[t.subject] || "#777";
-        const overdue = !t.is_done && new Date(t.due_date) < new Date();
+        
+        // 3. Logic for Dates
+        const dueDate = new Date(t.due_date);
+        const now = new Date();
+        // Set 'now' to the start of today if you only care about the date, not the exact time
+        now.setHours(0, 0, 0, 0); 
+        
+        const isOverdue = !t.is_done && dueDate < now;
 
+        // 4. Create the Element
         const div = document.createElement("div");
-        div.className = `assignment ${overdue ? 'red' : ''}`;
+        div.className = `assignment ${isOverdue ? 'red' : ''}`;
         div.style.borderLeft = `6px solid ${color}`;
 
         div.innerHTML = `
@@ -70,12 +93,13 @@ async function loadTasks(){
                 <span class="subject-label" style="background:${color}">
                     ${t.subject}
                 </span>
-                ${t.title} (${t.due_date}) [${t.priority}]
+                <strong>${t.title}</strong> <br>
+                <small>Due: ${t.due_date} | Priority: ${t.priority}</small>
             </span>
             <div style="position:relative; display:inline-block;">
                 ${!t.is_done 
                     ? `<button onclick="doneTask(${t.id})">Turn In</button>`
-                    : 'Turned In'}
+                    : '<span class="status-done">Completed</span>'}
                 <button class="more-btn" onclick="toggleMenu(this)">⋮</button>
                 <div class="dropdown-menu" style="display:none; position:absolute; right:0; top:30px; background:#fff; color:#000; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,0.15); min-width:100px; z-index:10;">
                     <div style="padding:8px; cursor:pointer;" onclick="deleteTask(${t.id})">Delete</div>
@@ -83,10 +107,19 @@ async function loadTasks(){
             </div>
         `;
 
-        assignedList.appendChild(div);
+        // 5. Route the task to the correct container
+        if (t.is_done) {
+            // Task is finished
+            turnedinList.appendChild(div);
+        } else if (isOverdue) {
+            // Task is NOT finished and date has passed
+            lateList.appendChild(div);
+        } else {
+            // Task is NOT finished and date is in the future
+            assignedList.appendChild(div);
+        }
     });
 }
-
 async function addTask(){
     if(!taskInput.value || !subjectSelect.value || !dueDate.value)
         return alert("Fill all fields");
@@ -139,90 +172,23 @@ document.addEventListener('click', e => {
     }
 });
 
-function switchPage(page) {
-    document.querySelectorAll('.nav-item').forEach(item => {
-        item.classList.remove('active');
-    });
-    event.target.closest('.nav-item').classList.add('active');
-    loadPage(page);
-}
 
-function loadPage(page) {
-    const contentArea = document.getElementById('contentArea');
+
+function sortTasks(criteria) {
+    allTasks.sort((a, b) => {
+        if (criteria === 'subject') {
+            return a.subject.localeCompare(b.subject);
+        } 
+        else if (criteria === 'due_date') {
+            return new Date(a.due_date) - new Date(b.due_date);
+        } 
+        else if (criteria === 'priority') {
+            const weights = { 'High': 1, 'Medium': 2, 'Low': 3 };
+            return (weights[a.priority] || 4) - (weights[b.priority] || 4);
+        }
+    });
     
-    const pages = {
-        home: `
-            <div class="page-header">
-                <h1>Welcome to Edu-gram, ${currentUser.name}! 🎉</h1>
-                <p>Your personalized dashboard to manage your studies effectively.</p>
-            </div>
-        `,
-        assignments: `
-            <div class="page-header">
-                <h1>Assignment Tracker 📝</h1>
-                <p>Manage and track your assignments</p>
-            </div>
-            <div class="content-placeholder">
-                <i class="fas fa-tasks placeholder-icon"></i>
-                <p>Assignment tracking features coming soon...</p>
-            </div>
-        `,
-        exams: `
-            <div class="page-header">
-                <h1>Exam Tracker 🎓</h1>
-                <p>Keep track of your upcoming exams</p>
-            </div>
-            <div class="content-placeholder">
-                <i class="fas fa-graduation-cap placeholder-icon"></i>
-                <p>Exam tracking features coming soon...</p>
-            </div>
-        `,
-        pomodoro: `
-            <div class="page-header">
-                <h1>Pomodoro Timer ⏰</h1>
-                <p>Boost your productivity with focused study sessions</p>
-            </div>
-            <div class="content-placeholder">
-                <i class="fas fa-clock placeholder-icon"></i>
-                <p>Pomodoro timer coming soon...</p>
-            </div>
-        `,
-        todo: `
-            <div class="page-header">
-                <h1>To-Do List ✅</h1>
-                <p>Organize your daily tasks</p>
-            </div>
-            <div class="content-placeholder">
-                <i class="fas fa-list-check placeholder-icon"></i>
-                <p>To-Do list features coming soon...</p>
-            </div>
-        `,
-        profile: `
-            <div class="page-header">
-                <h1>Profile 👤</h1>
-                <p>Manage your account settings</p>
-            </div>
-            <div class="profile-card">
-                <div class="profile-avatar-large">
-                    <i class="fas fa-user"></i>
-                </div>
-                <h2>${currentUser.name}</h2>
-                <p>${currentUser.email}</p>
-            </div>
-        `,
-        help: `
-            <div class="page-header">
-                <h1>Help & Support 🆘</h1>
-                <p>Get assistance and learn how to use Edu-gram</p>
-            </div>
-            <div class="content-placeholder">
-                <i class="fas fa-question-circle placeholder-icon"></i>
-                <p>Help documentation coming soon...</p>
-            </div>
-        `
-    };
-    
-    contentArea.innerHTML = pages[page] || pages.home;
+    renderTasks(allTasks); 
 }
 /* ========= INIT ========= */
 loadSubjects();

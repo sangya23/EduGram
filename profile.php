@@ -14,7 +14,7 @@ $conn = new mysqli("localhost", "root", "", "EDUGRAM");
 
 $userId = 1; // Later replace with session ID
 
-$sql = "SELECT email, dob, education, major FROM users WHERE id = $userId";
+$sql = "SELECT full_name, email, dob, education, major FROM users WHERE id = $userId";
 $result = $conn->query($sql);
 $user = $result->fetch_assoc();
 
@@ -48,7 +48,7 @@ if (!$user) {
         <i class="fas fa-home"></i>
         <span>Home</span>
     </a>
-    <a class="nav-item" href="#">
+    <a class="nav-item" href="Assignment.php">
         <i class="fas fa-file-alt"></i>
         <span>Assignments</span>
     </a>
@@ -56,13 +56,17 @@ if (!$user) {
         <i class="fas fa-clipboard-list"></i>
         <span>Exams</span>
     </a>
-    <a class="nav-item" href="#">
+    <a class="nav-item" href="pomodoroindex.php">
         <i class="fas fa-clock"></i>
         <span>Pomodoro Timer</span>
     </a>
     <a class="nav-item" href="to-dolist.php">
         <i class="fas fa-tasks"></i>
         <span>To-Do List</span>
+    </a>
+    <a class="nav-item" href="Techniques.php">
+        <i class="fas fa-lightbulb"></i>
+        <span>Techniques</span>
     </a>
     <a class="nav-item active" href="profile.php">
         <i class="fas fa-user"></i>
@@ -90,7 +94,7 @@ if (!$user) {
 
     <div class="profile-block">
         <h2>Profile Information</h2>
-    <p id="name">Name: <?php echo $user['name']; ?></p>    
+    <p id="name">Name: <?php echo $user['full_name']; ?></p>    
     <p id="email">Email Address: <?php echo $user['email']; ?></p>
     <p id="dob">Date of Birth: <?php echo $user['dob']; ?></p>
     <p id="education">Education: <?php echo $user['education']; ?></p>

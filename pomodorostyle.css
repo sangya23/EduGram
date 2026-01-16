@@ -13,6 +13,107 @@ h1 {
   font-size: 3.2rem;
 }
 
+.dashboard-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Sidebar (Fixed Left) */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 260px;
+    height: 100vh;
+    background: linear-gradient(180deg, #0f3460 0%, #16213e 100%);
+    color: #ffffff;
+    box-shadow: 4px 0 10px rgba(0,0,0,0.1);
+}
+
+/* Sidebar Header */
+.sidebar-header {
+    padding: 30px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.sidebar-header h1 {
+    font-size: 1.8em;
+    font-weight: 700;
+    margin: 0;
+}
+
+/* Sidebar Navigation */
+.sidebar-nav {
+    padding: 20px 0;
+    flex: 1;
+    overflow-y: auto;
+}
+.nav-item {
+    display: flex;              
+    align-items: center;        
+    gap: 12px;                  
+    padding: 15px 25px;
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    border-left: 3px solid transparent;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+
+/* Icon + Text inside nav-item */
+.nav-item i {
+    font-size:1.3em;
+    width:30px;
+}
+
+.nav-item span {
+   
+    font-weight: 500;
+}
+
+/* Hover and Active State */
+.nav-item:hover,
+.nav-item.active {
+    background: rgba(255,255,255,0.1);
+    color: white;
+    border-left-color: #4a90e2;
+}
+
+/* Sidebar Footer */
+.sidebar-footer {
+   
+    padding: 20px 0;
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+/* Main Content (Right of Sidebar) */
+.container pomodoro {
+    margin-left: 260px; /* push content right */
+    padding: 30px;
+}
+
+
+
+
+/* Responsive */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 70px;
+    }
+
+    .sidebar-header h1,
+    .nav-item span {
+        display: none;
+    }
+
+    .container pomodoro {
+        margin-left: 70px;
+    }
+}
+
 .pannel {
   display: flex;
   justify-content: center;
