@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Questionnaire- Edu-gram</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="qstyle.css">
+</head>
+<body>
+    <div class="questionnaire-container">
+        <div class="questionnaire-header">
+            <h1>📚 Complete Your Profile</h1>
+            <p>Help us personalize your learning experience</p>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressBar"></div>
+        </div>
+
+        <div class="alert" id="alertBox"></div>
+
+        <form id="questionnaireForm">
+            <!-- Question 1: Education Level -->
+            <div class="form-group">
+                <label><i class="fas fa-graduation-cap"></i> What is your current education level?</label>
+                <select id="educationLevel" required>
+                    <option value="">Select your level</option>
+                    <option value="school">School</option>
+                    <option value="high_school">High School</option>
+                    <option value="bachelor">Bachelor's Degree</option>
+                    <option value="masters">Master's Degree</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+
+            <!-- Question 2: Current Year -->
+            <div class="form-group">
+                <label><i class="fas fa-calendar"></i> Which year are you in?</label>
+                <input type="number" id="currentYear" min="1" max="10" placeholder="e.g., 1, 2..." required>
+            </div>
+
+            <!-- Question 3: Major Subject -->
+            <div class="form-group">
+                <label><i class="fas fa-book"></i> What is your major subject/field of study?</label>
+                <input type="text" id="majorSubject" placeholder="e.g., Computer Science, Mathematics, Engineering..." required>
+            </div>
+
+            <!-- Question 4: Study Hours -->
+            <div class="form-group">
+                <label><i class="fas fa-clock"></i> How many hours do you study per day on average?</label>
+                <div class="radio-group">
+                    <div class="radio-option">
+                        <input type="radio" id="hours1" name="studyHours" value="1" required>
+                        <label for="hours1">1-2 hours</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="hours2" name="studyHours" value="3">
+                        <label for="hours2">3-4 hours</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="hours3" name="studyHours" value="5">
+                        <label for="hours3">5-6 hours</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="hours4" name="studyHours" value="7">
+                        <label for="hours4">7+ hours</label>
+                    </div>
+                </div>
+            </div>
+
+            
+            <!-- Question 5: Goals -->
+            <div class="form-group">
+                <label><i class="fa-solid fa-bullseye"></i> What are your academic goals?</label>
+                <textarea id="goals" placeholder="e.g., Improve grades, prepare for exams, learn new skills..." required></textarea>
+            </div>
+
+            <!-- Question 6: Challenges -->
+            <div class="form-group">
+                <label><i class="fas fa-exclamation-triangle"></i> What challenges do you face in studying?</label>
+                <textarea id="challenges" placeholder="e.g., Time management, procrastination, difficult subjects..."></textarea>
+            </div>
+
+            <button type="submit" class="btn" id="submitBtn">
+                <i class="fas fa-check"></i> Complete Profile
+            </button>
+        </form>
+
+        <div class="skip-link">
+            <a href="#" onclick="skipQuestionnaire(); return false;">Skip for now</a>
+        </div>
+    </div>
+
+    <script>
+            // Check if user is authenticated
+            const user = JSON.parse(localStorage.getItem("user") || "null");
+            const isNewUser = localStorage.getItem("isNewUser");
+
+            // If not a new user or no user data, redirect to index
+            if (!user || isNewUser !== "true") {
+                // Check session as fallback
+                fetch('api/check-session.php')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (!data.logged_in) {
+                            window.location.href = "index.html";
+                        }
+                    })
+                    .catch(() => {
+                        window.location.href = "index.html";
+                    });
+            }
+
+            // Update progress bar as user fills form
+            const form = document.getElementById('questionnaireForm');
+            const progressBar = document.getElementById('progressBar');
+            const totalFields = 5; // education, year, major, study hours, goals (5 required fields)
+
+            form.addEventListener('input', updateProgress);
+
+            function updateProgress() {
+                let filledFields = 0;
+                
+                // Check each required field
+                if (document.getElementById('educationLevel').value) filledFields++;
+                if (document.getElementById('currentYear').value) filledFields++;
+                if (document.getElementById('majorSubject').value) filledFields++;
+                if (document.querySelector('input[name="studyHours"]:checked')) filledFields++;
+                if (document.getElementById('goals').value.trim()) filledFields++;
+                
+                const progress = (filledFields / totalFields) * 100;
+                progressBar.style.width = progress + '%';
+            }
+
+            // Handle form submission
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const submitBtn = document.getElementById('submitBtn');
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+                // Gather form data
+                const formData = {
+                    user_id: user.id,
+                    education_level: document.getElementById('educationLevel').value,
+                    current_year: parseInt(document.getElementById('currentYear').value),
+                    major_subject: document.getElementById('majorSubject').value,
+                    study_hours_daily: parseInt(document.querySelector('input[name="studyHours"]:checked').value),
+                    goals: document.getElementById('goals').value,
+                    challenges: document.getElementById('challenges').value || 'None specified'
+                };
+
+                try {
+                    const response = await fetch('api/save_questionnaire.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(formData)
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        showAlert('success', 'Profile completed successfully! Loading dashboard...');
+                        
+                        // IMPORTANT: Clear the new user flag so index.html shows dashboard
+                        localStorage.removeItem("isNewUser");
+                        
+                        // Redirect to index.html which will auto-show dashboard after 1.5 seconds
+                        setTimeout(() => {
+                            window.location.href = 'index.html';
+                        }, 1500);
+
+                    } else {
+                        showAlert('error', result.message || 'Failed to save profile. Please try again.');
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = '<i class="fas fa-check"></i> Complete Profile';
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    showAlert('error', 'An error occurred. Please try again.');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fas fa-check"></i> Complete Profile';
+                }
+            });
+
+            function showAlert(type, message) {
+                const alertBox = document.getElementById('alertBox');
+                alertBox.className = `alert ${type} show`;
+                alertBox.textContent = message;
+                
+                setTimeout(() => {
+                    alertBox.classList.remove('show');
+                }, 5000);
+            }
+
+            function skipQuestionnaire() {
+                if (confirm('Are you sure you want to skip? You can complete your profile later from the Profile page.')) {
+                    // Clear the new user flag
+                    localStorage.removeItem("isNewUser");
+                    // Redirect to dashboard
+                    window.location.href = 'index.html';
+                }
+            }
+
+            // Initialize progress
+            updateProgress();
+    </script>
+</body>
+</html>
