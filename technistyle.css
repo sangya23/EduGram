@@ -99,6 +99,7 @@ body {
   
 /* ================= SIDEBAR ================= */
     .sidebar {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             width: 260px;
             background: linear-gradient(180deg, #0f3460 0%, #16213e 100%);
             color: white;

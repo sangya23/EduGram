@@ -29,6 +29,10 @@
                 <i class="fas fa-clipboard-list"></i>
                 <span>Exams</span>
             </a>
+            <a class="nav-item active" href="Techniques.php">
+                <i class="fas fa-lightbulb"></i>
+                <span>Techniques</span>
+            </a>
             <a class="nav-item" href="pomodoroindex.php">
                 <i class="fas fa-clock"></i>
                 <span>Pomodoro Timer</span>
@@ -37,23 +41,9 @@
                 <i class="fas fa-tasks"></i>
                 <span>To-Do List</span>
             </a>
-            <a class="nav-item active" href="Techniques.php">
-                <i class="fas fa-lightbulb"></i>
-                <span>Techniques</span>
-            </a>
-            <a class="nav-item " href="profile.php">
-                <i class="fas fa-user"></i>
-                <span>Profile</span>
-            </a>
             <a class="nav-item" href="#">
                 <i class="fas fa-question-circle"></i>
                 <span>Help</span>
-            </a>
-        </div>
-        <div class="sidebar-footer">
-            <a class="nav-item" href="#">
-                <i class="fas fa-sign-out-alt"></i>
-                <span>Logout</span>
             </a>
         </div>
 

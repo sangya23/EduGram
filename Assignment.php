@@ -107,6 +107,7 @@ if (isset($_POST['action'])) {
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="assignmentstyle.css" />
+    <link rel="stylesheet" href="aichatbot.css" />
 </head>
 <body>
 
@@ -128,6 +129,10 @@ if (isset($_POST['action'])) {
                 <i class="fas fa-clipboard-list"></i>
                 <span>Exams</span>
             </a>
+            <a class="nav-item" href="Techniques.php">
+                <i class="fas fa-lightbulb"></i>
+                <span>Techniques</span>
+            </a>
             <a class="nav-item" href="pomodoroindex.php">
                 <i class="fas fa-clock"></i>
                 <span>Pomodoro Timer</span>
@@ -136,23 +141,9 @@ if (isset($_POST['action'])) {
                 <i class="fas fa-tasks"></i>
                 <span>To-Do List</span>
             </a>
-            <a class="nav-item" href="Techniques.php">
-                <i class="fas fa-lightbulb"></i>
-                <span>Techniques</span>
-            </a>
-            <a class="nav-item " href="profile.php">
-                <i class="fas fa-user"></i>
-                <span>Profile</span>
-            </a>
             <a class="nav-item" href="#">
                 <i class="fas fa-question-circle"></i>
                 <span>Help</span>
-            </a>
-        </div>
-        <div class="sidebar-footer">
-            <a class="nav-item" href="#">
-                <i class="fas fa-sign-out-alt"></i>
-                <span>Logout</span>
             </a>
         </div>
 
@@ -227,6 +218,30 @@ if (isset($_POST['action'])) {
 
 <script src="assignmentjs.js"></script>
 
+<button class="chatbot-toggler" onclick="toggleChatbot()">
+    <span class="material-icons">chat</span>
+</button>
 
+<div class="chatbot-container" id="chatbot">
+    <div class="chatbot-header">
+        <h2>Virtual Assistant</h2> <span class="close-btn" onclick="toggleChatbot()">&times;</span>
+    </div>
+    
+    <ul class="chat-box">
+        <li class="chat incoming">
+            <span class="material-icons">smart_toy</span>
+            <p>Hello👋! I am connected to Grok AI. Ask me anything about your assignment.</p>
+        </li>
+    </ul>
+
+    <div class="chat-input">
+        <textarea placeholder="Type a message..." required></textarea>
+        <span id="send-btn" class="material-icons">send</span>
+    </div>
+</div>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+<script src=aichatbot.js></script>
 </body>
 </html>
