@@ -36,77 +36,66 @@ if (!$user) {
 <body>
 
 
-<div class="dashboard-container">
+    <div class="dashboard-container">
 
- 
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <h1>EDU-GRAM</h1>
-        </div>
-        <div class="sidebar-nav">
-    <a class="nav-item" href="#">
-        <i class="fas fa-home"></i>
-        <span>Home</span>
-    </a>
-    <a class="nav-item" href="Assignment.php">
-        <i class="fas fa-file-alt"></i>
-        <span>Assignments</span>
-    </a>
-    <a class="nav-item" href="#">
-        <i class="fas fa-clipboard-list"></i>
-        <span>Exams</span>
-    </a>
-    <a class="nav-item" href="pomodoroindex.php">
-        <i class="fas fa-clock"></i>
-        <span>Pomodoro Timer</span>
-    </a>
-    <a class="nav-item" href="to-dolist.php">
-        <i class="fas fa-tasks"></i>
-        <span>To-Do List</span>
-    </a>
-    <a class="nav-item" href="Techniques.php">
-        <i class="fas fa-lightbulb"></i>
-        <span>Techniques</span>
-    </a>
-    <a class="nav-item active" href="profile.php">
-        <i class="fas fa-user"></i>
-        <span>Profile</span>
-    </a>
-    <a class="nav-item" href="#">
-        <i class="fas fa-question-circle"></i>
-        <span>Help</span>
-    </a>
-</div>
-
-
-
-
-        <div class="sidebar-footer">
-            <a class="nav-item" href="#">
-                <i class="fas fa-sign-out-alt"></i>
-                <span>Logout</span>
-            </a>
-        </div>
-    </div>
-
-   
-<div class="main-content">
-
-    <div class="profile-block">
-        <h2>Profile Information</h2>
-    <p id="name">Name: <?php echo $user['full_name']; ?></p>    
-    <p id="email">Email Address: <?php echo $user['email']; ?></p>
-    <p id="dob">Date of Birth: <?php echo $user['dob']; ?></p>
-    <p id="education">Education: <?php echo $user['education']; ?></p>
-    <p id="major">Major Subject: <?php echo $user['major']; ?></p>
-        <button id="edit-btn">Edit</button>
-        <button id="save-btn" style="display:none;">Save</button>
-    </div>
     
-</div>
+        <div class="outergrid">
+                <aside class="sidebar">
+                    <div class="sidebar-header">
+                        <h1>Edu-gram</h1>
+                    </div>
+                    <div class="sidebar-nav">
+                        <a class="nav-item" href="#">
+                            <i class="fas fa-home"></i>
+                            <span>Home</span>
+                        </a>
+                        <a class="nav-item" href="Assignment.php">
+                            <i class="fas fa-file-alt"></i>
+                            <span>Assignments</span>
+                        </a>
+                        <a class="nav-item" href="#">
+                            <i class="fas fa-clipboard-list"></i>
+                            <span>Exams</span>
+                        </a>
+                        <a class="nav-item active" href="Techniques.php">
+                            <i class="fas fa-lightbulb"></i>
+                            <span>Techniques</span>
+                        </a>
+                        <a class="nav-item" href="pomodoroindex.php">
+                            <i class="fas fa-clock"></i>
+                            <span>Pomodoro Timer</span>
+                        </a>
+                        <a class="nav-item" href="to-dolist.php">
+                            <i class="fas fa-tasks"></i>
+                            <span>To-Do List</span>
+                        </a>
+                        <a class="nav-item" href="#">
+                            <i class="fas fa-question-circle"></i>
+                            <span>Help</span>
+                        </a>
+                    </div>
+
+                </aside>
+        </div>
+
+    
+        <div class="main-content">
+
+            <div class="profile-block">
+                <h2>Profile Information</h2>
+            <p id="name">Name: <?php echo $user['full_name']; ?></p>    
+            <p id="email">Email Address: <?php echo $user['email']; ?></p>
+            <p id="dob">Date of Birth: <?php echo $user['dob']; ?></p>
+            <p id="education">Education: <?php echo $user['education']; ?></p>
+            <p id="major">Major Subject: <?php echo $user['major']; ?></p>
+                <button id="edit-btn">Edit</button>
+                <button id="save-btn" style="display:none;">Save</button>
+            </div>
+            
+        </div>
 
 
-</div>
+    </div>
 
 
 </body>

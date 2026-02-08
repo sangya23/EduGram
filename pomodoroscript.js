@@ -1,3 +1,5 @@
+/* --- COMPLETELY FIXED pomodoroscript.js --- */
+
 /* --- DOM ELEMENTS --- */
 const minutesDisplay = document.getElementById('minutes');
 const secondsDisplay = document.getElementById('seconds');
@@ -26,13 +28,12 @@ const streakDisplay = document.getElementById('streakDisplay');
 
 /* --- VARIABLES --- */
 let timer = null;
-let mode = 'work'; // Default mode
+let mode = 'work';
 let workSessions = 0;
 let remainingMinutes = null;
 let remainingSeconds = null;
 
 /* --- MUSIC PLAYER LOGIC --- */
-// Toggle Dropdown
 musicIcon.addEventListener('click', (e) => {
     e.stopPropagation();
     musicDropdown.classList.toggle('show');
@@ -44,7 +45,6 @@ document.addEventListener('click', (e) => {
     }
 });
 
-// Handle Song Selection
 musicOptions.forEach(option => {
     option.addEventListener('click', () => {
         musicOptions.forEach(opt => opt.classList.remove('selected'));
@@ -52,11 +52,6 @@ musicOptions.forEach(option => {
 
         const src = option.getAttribute('data-src');
         bgMusic.src = src;
-
-        // ONLY play immediately if we are in WORK mode and timer is running?
-        // Or simply if the user clicked it. 
-        // Logic: If user clicks song, they usually want to hear it.
-        // We will allow preview, but timer logic controls auto-play.
         bgMusic.play();
         togglePlayBtn.innerHTML = '<i class="fas fa-pause"></i>';
     });
@@ -107,16 +102,13 @@ function startTimer() {
     seconds = 59;
   }
 
-  // --- MUSIC LOGIC CHANGE: ONLY PLAY ON WORK ---
   if (mode === 'work' && bgMusic.src && bgMusic.paused) {
       bgMusic.play();
       togglePlayBtn.innerHTML = '<i class="fas fa-pause"></i>';
   } else if (mode !== 'work') {
-      // Ensure music is silent on breaks
       bgMusic.pause();
       togglePlayBtn.innerHTML = '<i class="fas fa-play"></i>';
   }
-  // ---------------------------------------------
 
   timer = setInterval(() => {
     updateDisplay(minutes, seconds);
@@ -136,11 +128,8 @@ function startTimer() {
       clearInterval(timer);
       if(alarmSound) { try { alarmSound.play(); } catch (_) {} }
       
-      // --- MODE SWITCH LOGIC ---
       mode = getNextMode();
       
-      // Stop music immediately when switching to break
-      // Start music immediately if switching BACK to work
       if (mode !== 'work') {
           bgMusic.pause();
           togglePlayBtn.innerHTML = '<i class="fas fa-play"></i>';
@@ -158,7 +147,6 @@ function pauseTimer() {
   remainingMinutes = parseInt(minutesDisplay.textContent);
   remainingSeconds = parseInt(secondsDisplay.textContent);
   
-  // Always pause music when timer pauses
   bgMusic.pause();
   togglePlayBtn.innerHTML = '<i class="fas fa-play"></i>';
 }
@@ -188,7 +176,6 @@ function getNextMode() {
   return 'work';
 }
 
-// Mode Click Listeners
 [workTitle, breakTitle, longBreakTitle].forEach(title => {
     title.addEventListener('click', () => {
         clearInterval(timer);
@@ -196,7 +183,6 @@ function getNextMode() {
         setActiveTab(mode);
         remainingMinutes = null;
         
-        // Music Logic: If user clicks "Break", stop music
         if (mode !== 'work') {
             bgMusic.pause();
             togglePlayBtn.innerHTML = '<i class="fas fa-play"></i>';
@@ -212,7 +198,7 @@ startBtn.addEventListener('click', startTimer);
 pauseBtn.addEventListener('click', pauseTimer);
 resetBtn.addEventListener('click', resetTimer);
 
-/* --- BACKEND CONNECTION WITH DEBUGGING --- */
+/* --- BACKEND CONNECTION - COMPLETELY FIXED --- */
 
 function logStudyTime(minutes) {
     const formData = new FormData();
@@ -223,14 +209,14 @@ function logStudyTime(minutes) {
         method: 'POST',
         body: formData
     })
-    .then(response => response.text()) // Use .text() first to debug PHP errors
+    .then(response => response.text())
     .then(text => {
         try {
             const data = JSON.parse(text);
             if(data.status !== 'success') {
                 console.warn("DB Log Warning:", data.message);
             } else {
-                console.log("Logged 1 minute successfully.");
+                console.log("✓ Logged", minutes, "minute(s) for user", data.user_id);
             }
         } catch (e) {
             console.error("Backend Error (Invalid JSON):", text);
@@ -258,15 +244,40 @@ window.onclick = function(event) {
 let myChart = null;
 
 function loadChartData() {
+    console.log('📊 Loading study report...');
+    
     fetch('pomodoro_backend.php?action=get_report')
     .then(response => response.text())
     .then(text => {
+        console.log('Raw backend response:', text);
         try {
-            const data = JSON.parse(text);
+            const response = JSON.parse(text);
+            console.log('Parsed response:', response);
             
-            // Check if data is an array (valid) or error object
-            if (data.status === 'error') {
-                console.error("Report Error:", data.message);
+            // ✅ FIX: Handle both response formats
+            let data = [];
+            let userId = null;
+            
+            if (response.status === 'success') {
+                // New format: {"status":"success","user_id":1,"data":[...]}
+                data = response.data || [];
+                userId = response.user_id;
+            } else if (response.status === 'error') {
+                console.error("❌ Report Error:", response.message);
+                renderChart([], []);
+                if(streakDisplay) streakDisplay.innerText = '0';
+                return;
+            } else if (Array.isArray(response)) {
+                // Old format: Direct array
+                data = response;
+            }
+            
+            console.log('Study data for user', userId, ':', data);
+            
+            if (data.length === 0) {
+                console.log('No study data found');
+                renderChart([], []);
+                if(streakDisplay) streakDisplay.innerText = '0';
                 return;
             }
 
@@ -274,15 +285,17 @@ function loadChartData() {
             const minutes = data.map(entry => entry.study_minutes);
             const hours = minutes.map(m => (m / 60).toFixed(1));
 
-            // Basic Streak Calculation
             if(streakDisplay) streakDisplay.innerText = data.length;
 
+            console.log('Rendering chart with labels:', labels, 'hours:', hours);
             renderChart(labels, hours);
+            
         } catch (e) {
-            console.error("Backend Error (Invalid JSON):", text);
+            console.error("❌ JSON Parse Error:", e);
+            console.error("Response text was:", text);
         }
     })
-    .catch(err => console.error("Error fetching report:", err));
+    .catch(err => console.error("❌ Network Error:", err));
 }
 
 function renderChart(labels, data) {
@@ -295,10 +308,10 @@ function renderChart(labels, data) {
     myChart = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: labels,
+            labels: labels.length > 0 ? labels : ['No Data'],
             datasets: [{
                 label: 'Hours Studied',
-                data: data,
+                data: data.length > 0 ? data : [0],
                 backgroundColor: 'rgba(77, 166, 255, 0.5)',
                 borderColor: '#4da6ff',
                 borderWidth: 1,
@@ -324,4 +337,6 @@ function renderChart(labels, data) {
             }
         }
     });
+    
+    console.log('✓ Chart rendered successfully');
 }

@@ -1,4 +1,18 @@
 <?php
+// Session and user check
+session_start();
+require_once 'api/google_config.php';
+
+// Redirect to login if not logged in
+if (!isset($_SESSION['user_id'])) {
+    $_SESSION['redirect_after_login'] = 'Assignment.php';
+    header("Location: " . getAuthUrl());
+    exit();
+}
+
+$user_id = $_SESSION['user_id'];
+
+// Database connection
 $host = "localhost";
 $user = "root";
 $pass = "";
@@ -12,17 +26,21 @@ try {
     $pdo->exec("CREATE DATABASE IF NOT EXISTS $dbname");
     $pdo->exec("USE $dbname");
 
+    // ✅ FIXED: Add user_id to subjects table
     $pdo->exec("
         CREATE TABLE IF NOT EXISTS subjects (
             id INT AUTO_INCREMENT PRIMARY KEY,
-            name VARCHAR(100) UNIQUE NOT NULL,
-            color VARCHAR(20) NOT NULL
+            user_id INT NOT NULL,
+            name VARCHAR(100) NOT NULL,
+            color VARCHAR(20) NOT NULL,
+            UNIQUE KEY unique_user_subject (user_id, name)
         )
     ");
 
     $pdo->exec("
         CREATE TABLE IF NOT EXISTS assignments (
             id INT AUTO_INCREMENT PRIMARY KEY,
+            user_id INT NOT NULL,
             title VARCHAR(255) NOT NULL,
             subject VARCHAR(100) NOT NULL,
             priority VARCHAR(20),
@@ -41,37 +59,41 @@ if (isset($_POST['action'])) {
     switch ($_POST['action']) {
 
         case 'get_subjects':
-            echo json_encode(
-                $pdo->query("SELECT * FROM subjects ORDER BY name")
-                    ->fetchAll(PDO::FETCH_ASSOC)
-            );
+            // ✅ FIXED: Only get subjects for this user
+            $stmt = $pdo->prepare("SELECT * FROM subjects WHERE user_id = ? ORDER BY name");
+            $stmt->execute([$user_id]);
+            echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
             exit;
 
         case 'add_subject':
-            $stmt = $pdo->prepare("INSERT INTO subjects(name,color) VALUES (?,?)");
-            $stmt->execute([$_POST['name'], $_POST['color']]);
+            // ✅ FIXED: Include user_id when adding subject
+            $stmt = $pdo->prepare("INSERT INTO subjects(user_id, name, color) VALUES (?, ?, ?)");
+            $stmt->execute([$user_id, $_POST['name'], $_POST['color']]);
             echo json_encode(["success" => true]);
             exit;
 
         case 'delete_subject':
-            $stmt = $pdo->prepare("DELETE FROM subjects WHERE id=?");
-            $stmt->execute([$_POST['id']]);
+            // ✅ FIXED: Only delete if it belongs to this user
+            $stmt = $pdo->prepare("DELETE FROM subjects WHERE id = ? AND user_id = ?");
+            $stmt->execute([$_POST['id'], $user_id]);
             echo json_encode(["success" => true]);
             exit;
 
         case 'get_tasks':
-            echo json_encode(
-                $pdo->query("SELECT * FROM assignments ORDER BY due_date")
-                    ->fetchAll(PDO::FETCH_ASSOC)
-            );
+            // ✅ Filter by user_id
+            $stmt = $pdo->prepare("SELECT * FROM assignments WHERE user_id = ? ORDER BY due_date");
+            $stmt->execute([$user_id]);
+            echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
             exit;
 
         case 'add_task':
+            // ✅ Include user_id
             $stmt = $pdo->prepare("
-                INSERT INTO assignments(title, subject, priority, due_date)
-                VALUES (?, ?, ?, ?)
+                INSERT INTO assignments(user_id, title, subject, priority, due_date)
+                VALUES (?, ?, ?, ?, ?)
             ");
             $stmt->execute([
+                $user_id,
                 $_POST['title'],
                 $_POST['subject'],
                 $_POST['priority'],
@@ -81,14 +103,16 @@ if (isset($_POST['action'])) {
             exit;
 
         case 'done_task':
-            $stmt = $pdo->prepare("UPDATE assignments SET is_done=1 WHERE id=?");
-            $stmt->execute([$_POST['id']]);
+            // ✅ Only update if it belongs to this user
+            $stmt = $pdo->prepare("UPDATE assignments SET is_done=1 WHERE id=? AND user_id=?");
+            $stmt->execute([$_POST['id'], $user_id]);
             echo json_encode(["success" => true]);
             exit;
 
         case 'delete_task':
-            $stmt = $pdo->prepare("DELETE FROM assignments WHERE id=?");
-            $stmt->execute([$_POST['id']]);
+            // ✅ Only delete if it belongs to this user
+            $stmt = $pdo->prepare("DELETE FROM assignments WHERE id=? AND user_id=?");
+            $stmt->execute([$_POST['id'], $user_id]);
             echo json_encode(["success" => true]);
             exit;
     }
@@ -107,26 +131,26 @@ if (isset($_POST['action'])) {
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="assignmentstyle.css" />
-    <link rel="stylesheet" href="aichatbot.css" />
+    
 </head>
 <body>
 
 <div class="main">
     <div class="sidebar">
         <div class="sidebar-header">
-            <h1>Edu-gram</h1>
+            <h1>Edu-Gram</h1>
         </div>
         <div class="sidebar-nav">
-            <a class="nav-item" href="#">
+            <a class="nav-item" href="index.html">
                 <i class="fas fa-home"></i>
                 <span>Home</span>
             </a>
             <a class="nav-item active" href="Assignment.php">
-                <i class="fas fa-file-alt"></i>
+                <i class="fas fa-tasks"></i>
                 <span>Assignments</span>
             </a>
-            <a class="nav-item" href="#">
-                <i class="fas fa-clipboard-list"></i>
+            <a class="nav-item" href="exam_list.php">
+                <i class="fas fa-graduation-cap"></i>
                 <span>Exams</span>
             </a>
             <a class="nav-item" href="Techniques.php">
@@ -138,10 +162,10 @@ if (isset($_POST['action'])) {
                 <span>Pomodoro Timer</span>
             </a>
             <a class="nav-item" href="to-dolist.php">
-                <i class="fas fa-tasks"></i>
+                <i class="fas fa-list-check"></i>
                 <span>To-Do List</span>
             </a>
-            <a class="nav-item" href="#">
+            <a class="nav-item" href="help.php">
                 <i class="fas fa-question-circle"></i>
                 <span>Help</span>
             </a>
@@ -217,31 +241,5 @@ if (isset($_POST['action'])) {
 
 
 <script src="assignmentjs.js"></script>
-
-<button class="chatbot-toggler" onclick="toggleChatbot()">
-    <span class="material-icons">chat</span>
-</button>
-
-<div class="chatbot-container" id="chatbot">
-    <div class="chatbot-header">
-        <h2>Virtual Assistant</h2> <span class="close-btn" onclick="toggleChatbot()">&times;</span>
-    </div>
-    
-    <ul class="chat-box">
-        <li class="chat incoming">
-            <span class="material-icons">smart_toy</span>
-            <p>Hello👋! I am connected to Grok AI. Ask me anything about your assignment.</p>
-        </li>
-    </ul>
-
-    <div class="chat-input">
-        <textarea placeholder="Type a message..." required></textarea>
-        <span id="send-btn" class="material-icons">send</span>
-    </div>
-</div>
-
-<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-
-<script src=aichatbot.js></script>
 </body>
 </html>

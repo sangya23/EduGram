@@ -1,145 +1,167 @@
+/* Import Common Styles */
+@import url('common-style.css');
 
-/* Body Background */
-body {
-    margin: 0;
-    font-family: 'Lucida Sans', sans-serif;
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-    color: #c7c7d1;
+/* To-Do List Specific Styles */
+.todo {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 20px;
 }
 
-/* Dashboard Container */
-.dashboard-container {
-    position: relative;
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
+.todo-box {
+    background: rgba(255,255,255,0.08);
+    padding: 40px;
+    border-radius: 15px;
+    width: 100%;
+    max-width: 700px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.1);
 }
 
-/* Sidebar (Fixed Left) */
-.sidebar {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 260px;
-    height: 100vh;
-    background: linear-gradient(180deg, #0f3460 0%, #16213e 100%);
-    color: #ffffff;
-    box-shadow: 4px 0 10px rgba(0,0,0,0.1);
+.todo-box h2 {
+    color: #4a90e2;
+    font-family: 'Segoe UI', sans-serif;
+    margin-bottom: 25px;
+    text-align: center;
+    font-size: 2.2em;
+    font-weight: 600;
 }
 
-/* Sidebar Header */
-.sidebar-header {
-    padding: 30px 20px;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+.todo-box input[type="text"],
+.todo-box input[type="datetime-local"] {
+    padding: 14px;
+    font-size: 16px;
+    margin: 10px 5px;
+    border-radius: 8px;
+    border: 2px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.05);
+    color: #e5e7eb;
+    width: calc(50% - 15px);
+    transition: all 0.3s ease;
 }
 
-.sidebar-header h1 {
-    font-size: 1.8em;
-    font-weight: 700;
-    margin: 0;
+.todo-box input[type="text"]:focus,
+.todo-box input[type="datetime-local"]:focus {
+    outline: none;
+    border-color: #4a90e2;
+    background: rgba(255,255,255,0.08);
 }
 
-/* Sidebar Navigation */
-.sidebar-nav {
-    padding: 20px 0;
-    flex: 1;
-    overflow-y: auto;
-}
-.nav-item {
-    display: flex;              
-    align-items: center;        
-    gap: 12px;                  
-    padding: 15px 25px;
-    color: rgba(255, 255, 255, 0.8);
-    text-decoration: none;
-    border-left: 3px solid transparent;
-    cursor: pointer;
-    transition: 0.3s ease;
-}
-
-
-/* Icon + Text inside nav-item */
-.nav-item i {
-    font-size:1.3em;
-    width:30px;
-}
-
-.nav-item span {
-   
-    font-weight: 500;
-}
-
-/* Hover and Active State */
-.nav-item:hover,
-.nav-item.active {
-    background: rgba(255,255,255,0.1);
+.todo-box button {
+    margin-top: 10px;
+    padding: 14px 30px;
+    background: linear-gradient(135deg, #4a90e2, #0f3460);
     color: white;
-    border-left-color: #4a90e2;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.3s ease;
 }
 
-/* Sidebar Footer */
-.sidebar-footer {
-   
-    padding: 20px 0;
-    border-top: 1px solid rgba(255,255,255,0.1);
+.todo-box button:hover {
+    background: linear-gradient(135deg, #5aa3f0, #1a4675);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(74, 144, 226, 0.3);
 }
 
-/* Main Content (Right of Sidebar) */
-.main-content {
-    margin-left: 260px; /* push content right */
-    padding: 30px;
+#task-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 25px;
 }
 
-/* Profile  */
-.profile-block
- {
+#task-list li {
+    background: rgba(255,255,255,0.05);
+    padding: 18px;
+    margin: 12px 0;
+    border-radius: 10px;
+    border-left: 4px solid #4a90e2;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+    color: #e5e7eb;
+}
+
+#task-list li:hover {
+    background: rgba(255,255,255,0.08);
+    transform: translateX(5px);
+}
+
+#task-list li.completed {
+    opacity: 0.6;
+    text-decoration: line-through;
+}
+
+/* Task Controls */
+.task-controls {
+    display: flex;
+    gap: 10px;
+}
+
+.task-controls button {
+    padding: 8px 15px;
+    font-size: 14px;
+    margin: 0;
+}
+
+/* Profile Block */
+.profile-block {
     background: rgba(255,255,255,0.08);
     padding: 20px;
     border-radius: 12px;
     margin-bottom: 20px;
+    border: 1px solid rgba(255,255,255,0.1);
 }
 
-/* Headings in Main Content */
-.main-content, h2 {
-    color: #e5e7eb;
-    font-family: Geneva, sans-serif;
-    margin-bottom: 15px;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .sidebar {
-        width: 70px;
-    }
-
-    .sidebar-header h1,
-    .nav-item span {
-        display: none;
-    }
-
-    .main-content {
-        margin-left: 70px;
-    }
-}
 .profile-block input {
-    padding: 5px;
+    padding: 10px;
     font-size: 16px;
     margin-left: 5px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
+    border-radius: 8px;
+    border: 2px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.05);
+    color: #e5e7eb;
 }
 
 .profile-block button {
     margin-top: 10px;
-    padding: 5px 10px;
-    background-color: #0f3460;
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #4a90e2, #0f3460);
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
     cursor: pointer;
+    font-weight: 600;
 }
 
 .profile-block button:hover {
-    background-color: #16213e;
+    background: linear-gradient(135deg, #5aa3f0, #1a4675);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .todo-box input[type="text"],
+    .todo-box input[type="datetime-local"] {
+        width: 100%;
+        margin: 5px 0;
+    }
+    
+    .todo-box {
+        padding: 25px;
+    }
+    
+    #task-list li {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .task-controls {
+        width: 100%;
+        justify-content: flex-end;
+    }
 }

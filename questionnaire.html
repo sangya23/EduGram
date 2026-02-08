@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Questionnaire- Edu-gram</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="qstyle.css">
+</head>
+<body>
+    <div class="questionnaire-container">
+        <div class="questionnaire-header">
+            <h1>📚 Complete Your Profile</h1>
+            <p>Help us personalize your learning experience</p>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressBar"></div>
+        </div>
+
+        <div class="alert" id="alertBox"></div>
+
+        <form id="questionnaireForm">
+            <!-- Question 1: Education Level -->
+            <div class="form-group">
+                <label><i class="fas fa-graduation-cap"></i> What is your current education level?</label>
+                <select id="educationLevel" required>
+                    <option value="">Select your level</option>
+                    <option value="school">School</option>
+                    <option value="high_school">High School</option>
+                    <option value="bachelor">Bachelor's Degree</option>
+                    <option value="masters">Master's Degree</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+
+            <!-- Question 2: Current Year -->
+            <div class="form-group">
+                <label><i class="fas fa-calendar"></i> Which year are you in?</label>
+                <input type="number" id="currentYear" min="1" max="10" placeholder="e.g., 1, 2..." required>
+            </div>
+
+            <!-- Question 3: Major Subject -->
+            <div class="form-group">
+                <label><i class="fas fa-book"></i> What is your major subject/field of study?</label>
+                <input type="text" id="majorSubject" placeholder="e.g., Computer Science, Mathematics, Engineering..." required>
+            </div>
+
+            <!-- Question 4: Study Hours -->
+            <div class="form-group">
+                <label><i class="fas fa-clock"></i> How many hours do you study per day on average?</label>
+                <div class="radio-group">
+                    <div class="radio-option">
+                        <input type="radio" id="hours1" name="studyHours" value="1" required>
+                        <label for="hours1">1-2 hours</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="hours2" name="studyHours" value="3">
+                        <label for="hours2">3-4 hours</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="hours3" name="studyHours" value="5">
+                        <label for="hours3">5-6 hours</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="hours4" name="studyHours" value="7">
+                        <label for="hours4">7+ hours</label>
+                    </div>
+                </div>
+            </div>
+
+            
+            <!-- Question 5: Goals -->
+            <div class="form-group">
+                <label><i class="fa-solid fa-bullseye"></i> What are your academic goals?</label>
+                <textarea id="goals" placeholder="e.g., Improve grades, prepare for exams, learn new skills..." required></textarea>
+            </div>
+
+            <!-- Question 6: Challenges -->
+            <div class="form-group">
+                <label><i class="fas fa-exclamation-triangle"></i> What challenges do you face in studying?</label>
+                <textarea id="challenges" placeholder="e.g., Time management, procrastination, difficult subjects..."></textarea>
+            </div>
+
+            <button type="submit" class="btn" id="submitBtn">
+                <i class="fas fa-check"></i> Complete Profile
+            </button>
+        </form>
+
+        <div class="skip-link">
+            <a href="#" onclick="skipQuestionnaire(); return false;">Skip for now</a>
+        </div>
+    </div>
+
+    <script>
+    (function() {
+        // Check if user is authenticated
+        let user = JSON.parse(localStorage.getItem("user") || "null");
+        const isNewUser = localStorage.getItem("isNewUser");
+        const isEditing = localStorage.getItem("editingProfile");
+
+        console.log("=== QUESTIONNAIRE LOADED ===");
+        console.log("User:", user);
+        console.log("isNewUser:", isNewUser);
+        console.log("isEditing:", isEditing);
+        
+        if (!user) {
+            console.log("No user, checking session...");
+            fetch("api/check-session.php")
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.logged_in) {
+                        window.location.href = "index.html";
+                    } else {
+                        user = {
+                            id: data.user_id,
+                            name: data.name,
+                            email: data.email
+                        };
+                        localStorage.setItem("user", JSON.stringify(user));
+                        window.location.reload();
+                    }
+                })
+                .catch(() => {
+                    window.location.href = "index.html";
+                });
+            return;
+        }
+
+        // Determine mode
+        const isEditingMode = isEditing === "true";
+        console.log("Mode:", isEditingMode ? "EDITING" : "NEW USER");
+
+        // If editing mode, load existing data
+        if (isEditingMode && user.id) {
+            console.log("Loading profile data for editing...");
+            
+            fetch("api/get_profile.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ user_id: user.id })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Profile data:", data);
+                
+                if (data.success && data.profile && data.profile.questionnaire_completed) {
+                    const p = data.profile;
+                    
+                    // Pre-fill form
+                    if (p.education_level) {
+                        document.getElementById("educationLevel").value = p.education_level;
+                    }
+                    if (p.current_year) {
+                        document.getElementById("currentYear").value = p.current_year;
+                    }
+                    if (p.major_subject) {
+                        document.getElementById("majorSubject").value = p.major_subject;
+                    }
+                    if (p.study_hours_daily) {
+                        const radio = document.querySelector('input[name="studyHours"][value="' + p.study_hours_daily + '"]');
+                        if (radio) radio.checked = true;
+                    }
+                    if (p.goals) {
+                        document.getElementById("goals").value = p.goals;
+                    }
+                    if (p.challenges) {
+                        document.getElementById("challenges").value = p.challenges;
+                    }
+                    
+                    // Update UI for editing
+                    document.querySelector(".questionnaire-header h1").textContent = "✏️ Edit Your Profile";
+                    document.querySelector(".questionnaire-header p").textContent = "Update your learning preferences";
+                    document.getElementById("submitBtn").innerHTML = '<i class="fas fa-save"></i> Save Changes';
+                    document.querySelector(".skip-link a").textContent = "Cancel";
+                    
+                    updateProgress();
+                    console.log("Form pre-filled successfully");
+                }
+            })
+            .catch(error => {
+                console.error("Error loading profile:", error);
+            });
+        }
+
+        // Progress bar
+        const form = document.getElementById("questionnaireForm");
+        const progressBar = document.getElementById("progressBar");
+        const totalFields = 5;
+
+        form.addEventListener("input", updateProgress);
+
+        function updateProgress() {
+            let filledFields = 0;
+            
+            if (document.getElementById("educationLevel").value) filledFields++;
+            if (document.getElementById("currentYear").value) filledFields++;
+            if (document.getElementById("majorSubject").value) filledFields++;
+            if (document.querySelector('input[name="studyHours"]:checked')) filledFields++;
+            if (document.getElementById("goals").value.trim()) filledFields++;
+            
+            const progress = (filledFields / totalFields) * 100;
+            progressBar.style.width = progress + "%";
+        }
+
+        // Form submission
+        form.addEventListener("submit", async function(e) {
+            e.preventDefault();
+            
+            console.log("📝 Form submitted!");
+            
+            const submitBtn = document.getElementById("submitBtn");
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+            const formData = {
+                user_id: user.id,
+                education_level: document.getElementById("educationLevel").value,
+                current_year: parseInt(document.getElementById("currentYear").value),
+                major_subject: document.getElementById("majorSubject").value,
+                study_hours_daily: parseInt(document.querySelector('input[name="studyHours"]:checked').value),
+                goals: document.getElementById("goals").value,
+                challenges: document.getElementById("challenges").value || "None specified"
+            };
+
+            console.log("📤 Sending data:", formData);
+
+            try {
+                const response = await fetch("api/save_questionnaire.php", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(formData)
+                });
+
+                console.log("📥 Response status:", response.status);
+                
+                const result = await response.json();
+                console.log("📥 Response data:", result);
+
+                if (result.success) {
+                    console.log("✅ SUCCESS! Save was successful");
+                    
+                    const msg = isEditingMode 
+                        ? "Profile updated successfully! Returning to dashboard..."
+                        : "Profile completed successfully! Loading dashboard...";
+                    
+                    console.log("💬 Showing alert:", msg);
+                    showAlert("success", msg);
+                    
+                    // Clear ALL flags
+                    console.log("🗑️ Clearing localStorage flags...");
+                    localStorage.removeItem("isNewUser");
+                    localStorage.removeItem("editingProfile");
+                    console.log("✅ Flags cleared");
+                    
+                    console.log("⏳ Waiting 1.5 seconds before redirect...");
+                    setTimeout(() => {
+                        console.log("🚀 REDIRECTING TO INDEX.HTML NOW!");
+                        window.location.href = "index.html";
+                    }, 1500);
+                } else {
+                    console.log("❌ FAILED! Server returned success: false");
+                    console.log("Error message:", result.message);
+                    
+                    showAlert("error", result.message || "Failed to save profile.");
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = isEditingMode 
+                        ? '<i class="fas fa-save"></i> Save Changes'
+                        : '<i class="fas fa-check"></i> Complete Profile';
+                }
+            } catch (error) {
+                console.error("❌ CATCH ERROR:", error);
+                showAlert("error", "An error occurred. Please try again.");
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = isEditingMode 
+                    ? '<i class="fas fa-save"></i> Save Changes'
+                    : '<i class="fas fa-check"></i> Complete Profile';
+            }
+        });
+
+        function showAlert(type, message) {
+            const alertBox = document.getElementById("alertBox");
+            alertBox.className = "alert " + type + " show";
+            alertBox.textContent = message;
+            
+            setTimeout(() => {
+                alertBox.classList.remove("show");
+            }, 5000);
+        }
+
+        window.skipQuestionnaire = function() {
+            const msg = isEditingMode 
+                ? "Cancel editing and return to dashboard?"
+                : "Are you sure you want to skip? You can complete your profile later.";
+            
+            if (confirm(msg)) {
+                console.log("Skipping - clearing flags and redirecting");
+                localStorage.removeItem("isNewUser");
+                localStorage.removeItem("editingProfile");
+                window.location.href = "index.html";
+            }
+        };
+
+        // Initialize
+        updateProgress();
+        console.log("=== QUESTIONNAIRE READY ===");
+    })();
+    </script>
+</body>
+</html>

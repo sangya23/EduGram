@@ -6,32 +6,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Pomodoro Timer</title>
   <link rel="stylesheet" href="pomodorostyle.css"/>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <section class="header">
-    <nav>
-      <a href="#"><h1>Pomodoro</h1></a>
-    </nav>
-  </section>
-  
   <div class="dashboard-container">
       <div class="sidebar">
           <div class="sidebar-header">
-              <h1>EDU-GRAM</h1>
+              <h1>Edu-Gram</h1>
           </div>
           <div class="sidebar-nav">
-            <a class="nav-item" href="#">
+            <a class="nav-item" href="index.html">
                 <i class="fas fa-home"></i>
                 <span>Home</span>
             </a>
             <a class="nav-item" href="Assignment.php">
-                <i class="fas fa-file-alt"></i>
+                <i class="fas fa-tasks"></i>
                 <span>Assignments</span>
             </a>
-            <a class="nav-item" href="#">
-                <i class="fas fa-clipboard-list"></i>
+            <a class="nav-item" href="exam_list.php">
+                <i class="fas fa-graduation-cap"></i>
                 <span>Exams</span>
             </a>
             <a class="nav-item" href="Techniques.php">
@@ -43,15 +37,21 @@
                 <span>Pomodoro Timer</span>
             </a>
             <a class="nav-item" href="to-dolist.php">
-                <i class="fas fa-tasks"></i>
+                <i class="fas fa-list-check"></i>
                 <span>To-Do List</span>
             </a>
-            <a class="nav-item" href="#">
+            <a class="nav-item" href="help.php">
                 <i class="fas fa-question-circle"></i>
                 <span>Help</span>
             </a>
         </div>
     </div>
+
+    <main class="main-content">
+      <div class="page-header">
+        <h1>Pomodoro Timer ⏰</h1>
+        <p>Boost your productivity with focused study sessions</p>
+      </div>
 
     <div class="container pomodoro">
       
@@ -108,6 +108,7 @@
         <label>Long Break: <input id="longBreakInput" type="number" value="15" min="1"/></label>
       </div>
     </div>
+    </main>
   </div>
 
   <div id="reportModal" class="modal">
@@ -120,8 +121,8 @@
         <p class="stats-text">Total Streak: <span id="streakDisplay" style="color:#4da6ff">0</span> Days</p>
     </div>
   </div>
-
-  <audio id="bgMusic" loop></audio>
+    <audio id="alarmSound" src="alert.mp3" preload= "auto"> </audio>
+    <audio id="bgMusic" loop></audio>
   
   <script src="pomodoroscript.js"></script>
 </body>

@@ -1,5 +1,5 @@
 /* ================= CONFIGURATION ================= */
-const API_KEY = addYourGroqApiKeyHere; // Replace with your Groq API Key
+const API_KEY = "// Replace with your Groq API Key"; // Replace with your Groq API Key
 const API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
 /* ================= DOM ELEMENTS ================= */
