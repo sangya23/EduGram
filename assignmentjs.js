@@ -43,7 +43,7 @@ async function addSubject(){
     newSubjectName.value="";
     closeSubjectPopup();
     loadSubjects();
-    loadTasks(); // refresh tasks to get colors
+    loadTasks(); 
 }
 
 async function deleteSubject(id){
@@ -52,22 +52,22 @@ async function deleteSubject(id){
     loadTasks();
 }
 
-/* ========= TASKS ========= */
-let allTasks = []; // Global variable to store tasks
+
+let allTasks = []; 
 
 async function loadTasks(){
     const tasks = await post({action:"get_tasks"});
-    allTasks = tasks; // Store the fetched tasks
-    renderTasks(allTasks); // Call a separate function to draw them
+    allTasks = tasks; 
+    renderTasks(allTasks); 
 }
 
 function renderTasks(tasksToRender) {
-    // 1. Get references to your three containers
+   
     const assignedList = document.getElementById("assignedList");
     const lateList = document.getElementById("lateList");
     const turnedinList = document.getElementById("turnedinList");
 
-    // 2. Clear all containers before re-rendering
+ 
     assignedList.innerHTML = "";
     lateList.innerHTML = "";
     turnedinList.innerHTML = "";
@@ -75,15 +75,15 @@ function renderTasks(tasksToRender) {
     tasksToRender.forEach(t => {
         const color = subjectColors[t.subject] || "#777";
         
-        // 3. Logic for Dates
+     
         const dueDate = new Date(t.due_date);
         const now = new Date();
-        // Set 'now' to the start of today if you only care about the date, not the exact time
+    
         now.setHours(0, 0, 0, 0); 
         
         const isOverdue = !t.is_done && dueDate < now;
 
-        // 4. Create the Element
+
         const div = document.createElement("div");
         div.className = `assignment ${isOverdue ? 'red' : ''}`;
         div.style.borderLeft = `6px solid ${color}`;
@@ -107,15 +107,15 @@ function renderTasks(tasksToRender) {
             </div>
         `;
 
-        // 5. Route the task to the correct container
+
         if (t.is_done) {
-            // Task is finished
+          
             turnedinList.appendChild(div);
         } else if (isOverdue) {
-            // Task is NOT finished and date has passed
+           
             lateList.appendChild(div);
         } else {
-            // Task is NOT finished and date is in the future
+           
             assignedList.appendChild(div);
         }
     });
@@ -147,7 +147,7 @@ async function deleteTask(id){
     loadTasks();
 }
 
-/* ========= POPUP ========= */
+
 function openSubjectPopup(){
     subjectOverlay.classList.add("active");
     subjectCard.classList.add("active");
@@ -165,7 +165,7 @@ function toggleMenu(button){
     menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
 }
 
-// Close dropdown if clicked outside
+
 document.addEventListener('click', e => {
     if(!e.target.classList.contains('more-btn')){
         document.querySelectorAll('.dropdown-menu').forEach(m => m.style.display='none');
@@ -190,6 +190,6 @@ function sortTasks(criteria) {
     
     renderTasks(allTasks); 
 }
-/* ========= INIT ========= */
+
 loadSubjects();
 loadTasks();

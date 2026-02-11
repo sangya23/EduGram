@@ -7,14 +7,14 @@ $dob = $data['dob'];
 $education = $data['education'];
 $major = $data['major'];
 
-// Check if record exists
+
 $check = $conn->query("SELECT id FROM users WHERE id = $userId");
 
 if ($check->num_rows > 0) {
     $stmt = $conn->prepare("UPDATE users SET dob=?, education=?, major=? WHERE id=?");
     $stmt->bind_param("sssi", $dob, $education, $major, $userId);
 } else {
-    // Insert new record if it doesn't exist
+    
     $stmt = $conn->prepare("INSERT INTO users (id, dob, education, major, email, full_name) VALUES (?, ?, ?, ?, 'user@example.com', 'User')");
     $stmt->bind_param("isss", $userId, $dob, $education, $major);
 }

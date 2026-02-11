@@ -1,11 +1,11 @@
 <?php
-// api/get_profile.php
+
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST');
 header('Access-Control-Allow-Headers: Content-Type');
 
-// Database connection
+
 $host = 'localhost';
 $dbname = 'edugram';
 $username = 'root';
@@ -19,7 +19,6 @@ try {
     exit;
 }
 
-// Get JSON data
 $data = json_decode(file_get_contents('php://input'), true);
 $user_id = $data['user_id'] ?? null;
 
@@ -29,7 +28,7 @@ if (!$user_id) {
 }
 
 try {
-    // Fetch user data with questionnaire data (LEFT JOIN in case questionnaire not completed)
+
     $stmt = $pdo->prepare("
         SELECT 
             u.id,
@@ -52,7 +51,7 @@ try {
     $profile = $stmt->fetch(PDO::FETCH_ASSOC);
     
     if ($profile) {
-        // Format the response
+       
         $response = [
             'success' => true,
             'profile' => [

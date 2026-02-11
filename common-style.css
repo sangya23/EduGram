@@ -10,7 +10,8 @@ body {
     min-height: 100vh;
     position: relative;
     overflow-x: hidden;
-    color: #fff;
+    margin: 0;
+    padding: 0;
 }
 
 body::before {
@@ -44,9 +45,16 @@ body::after {
     50% { transform: translate(50px, 50px); }
 }
 
+.dashboard-container {
+    display: flex;
+    min-height: 100vh;
+    position: relative;
+    z-index: 1;
+}
+
 
 .sidebar {
-    width: 260px;
+    width: 260px !important;
     background: linear-gradient(180deg, #0f3460 0%, #16213e 100%);
     color: white;
     display: flex;
@@ -104,112 +112,72 @@ body::after {
     font-weight: 500;
 }
 
-
-.outergrid {
-    display: block;
-    min-height: 100vh;
-    width: 100%;
-}
-
 .main-content {
-    padding: 40px;
-    overflow-y: auto;
-    margin-left: 260px;
-    position: relative;
-    z-index: 1;
-}
-
-.main-content h1 {
-    color: white;
-    margin-bottom: 20px;
-    font-size: 2.5em;
-    text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.3);
-}
-
-.grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 25px;
-}
-
-.card {
-    perspective: 1200px;
-    cursor: pointer;
-}
-
-.inner-card {
-    width: 100%;
-    height: 240px;
-    border-radius: 16px;
-    transition: transform 0.7s ease;
-    transform-style: preserve-3d;
-    position: relative;
-}
-
-.card.flipped .inner-card {
-    transform: rotateY(180deg);
-}
-
-.front, .back {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    backface-visibility: hidden;
-    border-radius: 16px;
-    padding: 25px;
-    box-sizing: border-box;
+    flex: 1;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
-    color: #fff;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    overflow-y: auto;
+    margin-left: 260px; 
 }
 
-.front {
-    background: #FAD1D1;
-    color: #1a1a2e;
+
+.page-header {
+    background: linear-gradient(135deg, rgba(15, 52, 96, 0.95) 0%, rgba(22, 33, 62, 0.95) 100%);
+    backdrop-filter: blur(10px);
+    padding: 40px;
+    border-radius: 20px;
+    margin: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
 }
 
-.front .icon {
-    font-size: 42px;
-    margin-bottom: 15px;
-    opacity: 0.95;
-    color: #1a1a2e;
+.page-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    animation: rotate 20s linear infinite;
 }
 
-.front .card-title {
-    font-size: 1.3rem;
-    font-weight: 600;
-    margin-bottom: 8px;
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }
 
-.front .card-text {
-    opacity: 0.9;
-    font-size: 0.95rem;
+.page-header h1 {
+    font-size: 2.5em;
+    color: white;
+    margin-bottom: 12px;
+    font-weight: 700;
+    text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.3);
+    position: relative;
+    z-index: 1;
+    letter-spacing: -0.5px;
 }
 
-.back {
-    background: #2c3e50;
-    transform: rotateY(180deg);
-    font-size: 1.05rem;
+.page-header p {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.15em;
+    font-weight: 400;
+    position: relative;
+    z-index: 1;
     line-height: 1.6;
-    text-align: center;
-    justify-content: center;
-    align-items: center;
 }
 
 
-.g1 { background: #bdb1da; }
-.g2 { background: #FFBCB3; }
-.g3 { background: #95c7b5; }
-.g4 { background: #FAD1D1; }
-.g5 { background: #fadfed; }
-.g6 { background: #ffe68d; }
-
+.content-area {
+    flex: 1;
+    padding: 40px;
+}
 
 @media (max-width: 768px) {
     .sidebar {
-        width: 80px;
+        width: 80px !important;
     }
     
     .sidebar-header h1 {
@@ -231,27 +199,14 @@ body::after {
     
     .main-content {
         margin-left: 80px;
+    }
+    
+    .page-header {
         padding: 20px;
+        margin: 10px;
     }
     
-    .grid {
-        grid-template-columns: 1fr;
-        gap: 20px;
-    }
-    
-    .inner-card {
-        height: 220px;
-    }
-    
-    .front .icon {
-        font-size: 36px;
-    }
-    
-    .front .card-title {
-        font-size: 1.1rem;
-    }
-    
-    .back {
-        font-size: 0.95rem;
+    .page-header h1 {
+        font-size: 1.8em;
     }
 }

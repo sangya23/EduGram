@@ -14,19 +14,19 @@
 <div class="outergrid">
     <aside class="sidebar">
         <div class="sidebar-header">
-            <h1>Edu-gram</h1>
+            <h1>Edu-Gram</h1>
         </div>
         <div class="sidebar-nav">
-            <a class="nav-item" href="#">
+            <a class="nav-item" href="index.html">
                 <i class="fas fa-home"></i>
                 <span>Home</span>
             </a>
             <a class="nav-item" href="Assignment.php">
-                <i class="fas fa-file-alt"></i>
+                <i class="fas fa-tasks"></i>
                 <span>Assignments</span>
             </a>
-            <a class="nav-item" href="#">
-                <i class="fas fa-clipboard-list"></i>
+            <a class="nav-item" href="exam_list.php">
+                <i class="fas fa-graduation-cap"></i>
                 <span>Exams</span>
             </a>
             <a class="nav-item active" href="Techniques.php">
@@ -38,14 +38,14 @@
                 <span>Pomodoro Timer</span>
             </a>
             <a class="nav-item" href="to-dolist.php">
-                <i class="fas fa-tasks"></i>
+                <i class="fas fa-list-check"></i>
                 <span>To-Do List</span>
             </a>
-            <a class="nav-item" href="#">
+            <a class="nav-item" href="help.php">
                 <i class="fas fa-question-circle"></i>
                 <span>Help</span>
             </a>
-        </div>
+    </div>
 
     </aside>
     

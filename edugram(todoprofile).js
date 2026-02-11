@@ -1,6 +1,6 @@
 window.onload = function () {
 
-    // ===== 1. PROFILE LOGIC =====
+ 
     const editBtn = document.getElementById('edit-btn');
     const saveBtn = document.getElementById('save-btn');
 
@@ -10,7 +10,7 @@ window.onload = function () {
 
     if (editBtn) {
         editBtn.addEventListener('click', () => {
-            // Preserving original behavior: replacing text with inputs
+           
             dobP.innerHTML = 'Date of Birth: <input type="date" id="dob-input">';
             educationP.innerHTML = 'Education: <input type="text" id="education-input">';
             majorP.innerHTML = 'Major Subject: <input type="text" id="major-input">';
@@ -26,7 +26,7 @@ window.onload = function () {
 
             if (!validateDOB(dobInput)) return;
 
-            // Updated to use the persistence logic for profile saving
+    
             fetch("saveprofile.php", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -45,24 +45,24 @@ window.onload = function () {
 
                     editBtn.style.display = 'inline-block';
                     saveBtn.style.display = 'none';
-                    location.reload(); // Refresh to ensure PHP recognizes new data
+                    location.reload(); 
                 }
             });
         });
     }
 
-    // ===== 2. TO-DO LIST LOGIC =====
+
     const taskList = document.getElementById('task-list');
     const addTaskBtn = document.getElementById('add-task-btn');
     const taskInput = document.getElementById('task-input');
     const deadlineInput = document.getElementById('deadline-input');
 
-    // Persistence: Load tasks from DB as soon as the page opens
+
     if (taskList) {
         fetch("fetchtask.php")
             .then(res => res.json())
             .then(tasks => {
-                taskList.innerHTML = ''; // Clear existing static list
+                taskList.innerHTML = ''; 
                 tasks.forEach(t => {
                     addTaskToUI(t.id, t.task, t.due);
                 });
@@ -72,7 +72,7 @@ window.onload = function () {
     if (addTaskBtn) {
         addTaskBtn.addEventListener('click', () => {
             const task = taskInput.value.trim();
-            const due = deadlineInput.value; // Renamed to 'due' to match DB column
+            const due = deadlineInput.value; 
 
             if (task === '') {
                 alert("Task cannot be empty");
@@ -81,18 +81,17 @@ window.onload = function () {
 
             if (!validateDeadline(due)) return;
 
-            // Send to PHP backend
             fetch("addtask.php", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ task: task, due: due }) // FIXED: Key changed from 'deadline' to 'due'
+                body: JSON.stringify({ task: task, due: due }) 
             })
             .then(res => res.json())
             .then(data => {
-                // Check if ID was returned (success)
+         
                 if (data.id || data.success) {
                     addTaskToUI(data.id, task, due);
-                    // Clear inputs for multiple task additions
+                    
                     taskInput.value = '';
                     deadlineInput.value = '';
                 } else {
@@ -103,7 +102,7 @@ window.onload = function () {
         });
     }
 
-    // UI creation function
+
     function addTaskToUI(id, task, deadline) {
         const li = document.createElement('li');
         li.setAttribute("data-id", id);
@@ -126,7 +125,7 @@ window.onload = function () {
         taskList.appendChild(li);
     }
 
-    // Delete from DB + UI
+
     function deleteTask(id, li) {
         fetch("deletetask.php", {
             method: "POST",
@@ -141,7 +140,7 @@ window.onload = function () {
         });
     }
 
-    // ===== 3. VALIDATION FUNCTIONS =====
+    
     function validateDOB(dob) {
         if (!dob) return true;
         const selectedDate = new Date(dob);

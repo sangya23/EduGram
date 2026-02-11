@@ -13,8 +13,8 @@ function sendOTPEmail($to, $otp, $userName = 'User') {
         $mail->isSMTP();
         $mail->Host = 'smtp.gmail.com';
         $mail->SMTPAuth = true;
-        $mail->Username = 'edugram31@gmail.com'; // ⚠️ REPLACE WITH YOUR GMAIL
-        $mail->Password = 'mrzrfswecpdbczfx';     // ⚠️ REPLACE WITH APP PASSWORD
+        $mail->Username = 'edugram31@gmail.com'; 
+        $mail->Password = 'mrzrfswecpdbczfx';     
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port = 587;
         

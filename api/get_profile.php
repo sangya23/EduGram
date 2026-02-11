@@ -1,106 +1,79 @@
 <?php
-// api/save_questionnaire.php
+
+session_start();
+
+
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST');
+header('Access-Control-Allow-Methods: POST, GET');
 header('Access-Control-Allow-Headers: Content-Type');
 
-// Include database connection
-require_once 'api/db.php';
 
-// Get JSON input
-$data = json_decode(file_get_contents('php://input'), true);
+require_once 'db.php';
 
-// Validate required fields
-$requiredFields = ['user_id', 'education_level', 'current_year', 'major_subject', 'study_hours_daily', 'goals'];
-foreach ($requiredFields as $field) {
-    if (!isset($data[$field]) || empty($data[$field])) {
-        echo json_encode([
-            'success' => false,
-            'message' => "Field '$field' is required"
-        ]);
-        exit;
-    }
+$input = json_decode(file_get_contents('php://input'), true);
+$user_id = $input['user_id'] ?? null;
+
+
+if (!$user_id && isset($_SESSION['user_id'])) {
+    $user_id = $_SESSION['user_id'];
 }
 
-$userId = intval($data['user_id']);
-$educationLevel = trim($data['education_level']);
-$currentYear = intval($data['current_year']);
-$majorSubject = trim($data['major_subject']);
-$studyHoursDaily = intval($data['study_hours_daily']);
-$goals = trim($data['goals']);
-$challenges = isset($data['challenges']) ? trim($data['challenges']) : '';
+
+if (!$user_id) {
+    echo json_encode(['success' => false, 'message' => 'User ID required - not authenticated']);
+    exit;
+}
 
 try {
-    // Check if user exists
-    $stmt = $pdo->prepare("SELECT id FROM users WHERE id = ?");
-    $stmt->execute([$userId]);
     
-    if (!$stmt->fetch()) {
-        echo json_encode([
-            'success' => false,
-            'message' => 'User not found'
-        ]);
-        exit;
-    }
+    $stmt = $pdo->prepare("
+        SELECT u.id, u.name, u.email, u.created_at,
+               q.education_level, q.current_year, q.major_subject, 
+               q.study_hours_daily, q.goals, q.challenges
+        FROM users u
+        LEFT JOIN user_questionnaire q ON u.id = q.user_id
+        WHERE u.id = ?
+    ");
     
-    // Check if questionnaire already exists for this user
-    $stmt = $pdo->prepare("SELECT id FROM user_questionnaire WHERE user_id = ?");
-    $stmt->execute([$userId]);
+    $stmt->execute([$user_id]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
     
-    if ($stmt->fetch()) {
-        // Update existing questionnaire
-        $stmt = $pdo->prepare("
-            UPDATE user_questionnaire 
-            SET education_level = ?, 
-                current_year = ?, 
-                major_subject = ?, 
-                study_hours_daily = ?, 
-                goals = ?, 
-                challenges = ?
-            WHERE user_id = ?
-        ");
-        $stmt->execute([
-            $educationLevel,
-            $currentYear,
-            $majorSubject,
-            $studyHoursDaily,
-            $goals,
-            $challenges,
-            $userId
-        ]);
+    if ($user) {
+       
+        $questionnaire_completed = !is_null($user['education_level']) && 
+                                   !empty($user['education_level']);
         
-        echo json_encode([
+    
+        $response = [
             'success' => true,
-            'message' => 'Questionnaire updated successfully'
-        ]);
+            'profile' => [
+                'id' => (int)$user['id'],
+                'name' => $user['name'],
+                'email' => $user['email'],
+                'member_since' => $user['created_at'],
+                
+  
+                'questionnaire_completed' => $questionnaire_completed,
+                
+                'education_level' => $user['education_level'],
+                'current_year' => $user['current_year'] ? (int)$user['current_year'] : null,
+                'major_subject' => $user['major_subject'],
+                'study_hours_daily' => $user['study_hours_daily'] ? (int)$user['study_hours_daily'] : null,
+                'goals' => $user['goals'],
+                'challenges' => $user['challenges']
+            ]
+        ];
+        
+        echo json_encode($response);
     } else {
-        // Insert new questionnaire
-        $stmt = $pdo->prepare("
-            INSERT INTO user_questionnaire 
-            (user_id, education_level, current_year, major_subject, study_hours_daily, goals, challenges) 
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-        ");
-        $stmt->execute([
-            $userId,
-            $educationLevel,
-            $currentYear,
-            $majorSubject,
-            $studyHoursDaily,
-            $goals,
-            $challenges
-        ]);
-        
-        echo json_encode([
-            'success' => true,
-            'message' => 'Questionnaire saved successfully'
-        ]);
+        echo json_encode(['success' => false, 'message' => 'User not found']);
     }
     
 } catch (PDOException $e) {
     echo json_encode([
         'success' => false,
-        'message' => 'Failed to save questionnaire: ' . $e->getMessage()
+        'message' => 'Failed to fetch profile: ' . $e->getMessage()
     ]);
 }
 ?>

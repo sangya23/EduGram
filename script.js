@@ -1,4 +1,4 @@
-// Elements
+
 const workTitle = document.getElementById('work');
 const breakTitle = document.getElementById('break');
 const longBreakTitle = document.getElementById('longBreak');
@@ -15,14 +15,14 @@ const longBreakInput = document.getElementById('longBreakInput');
 
 const alarmSound = document.getElementById('alarmSound');
 
-// State
+
 let timer = null;
 let mode = 'work';
 let workSessions = 0;
 let remainingMinutes = null;
 let remainingSeconds = null;
 
-// Helpers
+
 function updateDisplay(mins, secs) {
   minutesDisplay.textContent = String(Math.max(0, mins)).padStart(2, '0');
   secondsDisplay.textContent = String(Math.max(0, secs)).padStart(2, '0');
@@ -45,7 +45,7 @@ function setActiveTab(tab) {
   if (tab === 'longBreak') longBreakTitle.classList.add('active');
 }
 
-// Core timer
+
 function startTimer() {
   clearInterval(timer);
 
@@ -53,7 +53,6 @@ function startTimer() {
 
   let minutes, seconds;
 
-  // Resume if paused
   if (remainingMinutes !== null && remainingSeconds !== null) {
     minutes = remainingMinutes;
     seconds = remainingSeconds;
@@ -114,7 +113,7 @@ function resetTimer() {
   alarmSound.currentTime = 0;
 }
 
-// Events
+
 startBtn.addEventListener('click', startTimer);
 pauseBtn.addEventListener('click', pauseTimer);
 resetBtn.addEventListener('click', resetTimer);
@@ -149,5 +148,5 @@ longBreakTitle.addEventListener('click', () => {
   updateDisplay(longBreakTime, 0);
 });
 
-// Initial display
+
 updateDisplay(parseInt(workInput.value) || 25, 0);

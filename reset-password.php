@@ -13,7 +13,7 @@ if (empty($token)) {
 
 $conn = getDbConnection();
 
-// Verify token
+
 $stmt = $conn->prepare("SELECT email, expires_at, used FROM password_reset_tokens WHERE token = ?");
 $stmt->bind_param("s", $token);
 $stmt->execute();
@@ -49,14 +49,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $validToken) {
         if (!preg_match($passwordRegex, $password)) {
             $error = "Password must contain uppercase, lowercase, number and special character";
         } else {
-            // Update password
+            
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
             
             $stmt = $conn->prepare("UPDATE users SET password = ? WHERE email = ?");
             $stmt->bind_param("ss", $hashedPassword, $email);
             
             if ($stmt->execute()) {
-                // Mark token as used
+                
                 $stmt = $conn->prepare("UPDATE password_reset_tokens SET used = 1 WHERE token = ?");
                 $stmt->bind_param("s", $token);
                 $stmt->execute();

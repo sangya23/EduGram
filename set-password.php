@@ -4,7 +4,7 @@ require_once __DIR__ . '/db.php';
 requireLogin();
 $user = getCurrentUser();
 
-// If password already exists, redirect to login
+
 if (!empty($user['password'])) {
     header("Location: index.html");
     exit();
@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!preg_match($passwordRegex, $password)) {
             $error = "Password must contain uppercase, lowercase, number and special character";
         } else {
-            // Hash password and update database
+            
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
             
             $conn = getDbConnection();

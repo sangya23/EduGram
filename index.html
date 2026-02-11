@@ -5,941 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edu-Gram - Welcome</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        body::before {
-            content: '';
-            position: absolute;
-            width: 500px;
-            height: 500px;
-            background: radial-gradient(circle, rgba(102, 126, 234, 0.3) 0%, transparent 70%);
-            top: -250px;
-            right: -250px;
-            animation: float 8s ease-in-out infinite;
-        }
-
-        body::after {
-            content: '';
-            position: absolute;
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, rgba(118, 75, 162, 0.3) 0%, transparent 70%);
-            bottom: -200px;
-            left: -200px;
-            animation: float 10s ease-in-out infinite reverse;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translate(0, 0); }
-            50% { transform: translate(50px, 50px); }
-        }
-
-        .container {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-            overflow: hidden;
-            width: 100%;
-            max-width: 900px;
-            display: flex;
-            min-height: 550px;
-            max-height: 90vh;
-            position: relative;
-            z-index: 1;
-        }
-
-        .welcome-panel {
-            flex: 1;
-            background: linear-gradient(135deg, rgba(15, 52, 96, 0.9) 0%, rgba(22, 33, 62, 0.9) 50%, rgba(26, 26, 46, 0.9) 100%);
-            color: white;
-            padding: 60px 40px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            border-right: 1px solid rgba(255, 255, 255, 0.1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .welcome-panel h1 {
-            font-size: 3em;
-            margin-bottom: 20px;
-            font-weight: 700;
-            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
-        }
-
-        .form-panel {
-            flex: 1;
-            padding: 40px;
-            display: flex;
-            flex-direction: column;
-            background: rgba(255, 255, 255, 0.95);
-            overflow-y: auto;
-            max-height: 90vh;
-        }
-
-        .tab-buttons {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
-            background: rgba(15, 52, 96, 0.1);
-            padding: 5px;
-            border-radius: 50px;
-        }
-
-        .tab-btn {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            background: transparent;
-            border-radius: 50px;
-            font-weight: 600;
-            color: #666;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            font-size: 1em;
-        }
-
-        .tab-btn.active {
-            background: linear-gradient(135deg, #0f3460 0%, #16213e 100%);
-            color: white;
-            box-shadow: 0 4px 10px rgba(15, 52, 96, 0.3);
-        }
-
-        .form-container {
-            display: none;
-        }
-
-        .form-container.active {
-            display: block;
-            animation: fadeIn 0.5s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .form-header {
-            margin-bottom: 30px;
-            text-align: center;
-        }
-
-        .form-header h2 {
-            color: #333;
-            font-size: 2em;
-            margin-bottom: 10px;
-        }
-
-        .form-header p {
-            color: #666;
-            font-size: 0.95em;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            color: #555;
-            margin-bottom: 8px;
-            font-weight: 500;
-        }
-
-        .input-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-
-        .input-icon {
-            position: absolute;
-            right: 15px;
-            color: #999;
-            font-size: 1.1em;
-            pointer-events: none;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 12px 45px 12px 15px;
-            border: 2px solid rgba(224, 224, 224, 0.5);
-            background: rgba(255, 255, 255, 0.8);
-            border-radius: 8px;
-            font-size: 1em;
-            transition: all 0.3s ease;
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: #0f3460;
-            background: rgba(255, 255, 255, 1);
-            box-shadow: 0 0 0 3px rgba(15, 52, 96, 0.1);
-        }
-
-        .form-group input.error {
-            border-color: #ef4444;
-        }
-
-        .form-group input.success {
-            border-color: #22c55e;
-        }
-
-        .password-toggle {
-            position: absolute;
-            right: 15px;
-            color: #999;
-            cursor: pointer;
-            font-size: 1.1em;
-            user-select: none;
-            z-index: 10;
-            transition: all 0.3s ease;
-        }
-
-        .password-toggle:hover {
-            color: #0f3460;
-        }
-
-        .password-requirements, .password-match-error, .password-match-success {
-            font-size: 0.85em;
-            margin-top: 8px;
-            padding: 10px;
-            border-radius: 6px;
-            border-left: 3px solid;
-            display: none;
-        }
-
-        .password-requirements {
-            color: #ef4444;
-            background: rgba(254, 226, 226, 0.9);
-            border-left-color: #ef4444;
-        }
-
-        .password-match-error {
-            color: #ef4444;
-            background: rgba(254, 226, 226, 0.9);
-            border-left-color: #ef4444;
-        }
-
-        .password-match-success {
-            color: #22c55e;
-            background: rgba(226, 254, 226, 0.9);
-            border-left-color: #22c55e;
-        }
-
-        .password-requirements.show, .password-match-error.show, .password-match-success.show {
-            display: block;
-        }
-
-        .email-validation-message {
-            font-size: 0.85em;
-            margin-top: 8px;
-            padding: 10px;
-            border-radius: 6px;
-            border-left: 3px solid;
-            display: none;
-            animation: slideDown 0.3s ease;
-        }
-
-        .email-validation-message.error {
-            color: #ef4444;
-            background: rgba(254, 226, 226, 0.9);
-            border-left-color: #ef4444;
-            display: block;
-        }
-
-        .email-validation-message.success {
-            color: #22c55e;
-            background: rgba(226, 254, 226, 0.9);
-            border-left-color: #22c55e;
-            display: block;
-        }
-
-        .email-validation-message.warning {
-            color: #f59e0b;
-            background: rgba(254, 243, 199, 0.9);
-            border-left-color: #f59e0b;
-            display: block;
-        }
-
-        .email-suggestion {
-            font-size: 0.85em;
-            color: #3b82f6;
-            margin-top: 8px;
-            padding: 10px;
-            background: rgba(219, 234, 254, 0.9);
-            border-radius: 6px;
-            border-left: 3px solid #3b82f6;
-            display: none;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .email-suggestion.show {
-            display: block;
-        }
-
-        .email-suggestion:hover {
-            background: rgba(191, 219, 254, 0.9);
-            transform: translateX(5px);
-        }
-
-
-        .name-validation-message {
-            font-size: 0.85em;
-            margin-top: 8px;
-            padding: 10px;
-            border-radius: 6px;
-            border-left: 3px solid;
-            display: none;
-        }
-
-        .name-validation-message.error {
-            color: #ef4444;
-            background: rgba(254, 226, 226, 0.9);
-            border-left-color: #ef4444;
-            display: block;
-        }
-
-        .name-validation-message.success {
-            color: #22c55e;
-            background: rgba(226, 254, 226, 0.9);
-            border-left-color: #22c55e;
-            display: block;
-        }
-        .btn {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, #0f3460 0%, #16213e 100%);
-            color: white;
-            border: none;
-            border-radius: 50px;
-            font-size: 1.1em;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 10px;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(15, 52, 96, 0.4);
-        }
-
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        .divider {
-            display: flex;
-            align-items: center;
-            margin: 25px 0;
-            color: #999;
-        }
-
-        .divider::before, .divider::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: #ddd;
-        }
-
-        .divider span {
-            padding: 0 15px;
-            font-size: 0.9em;
-        }
-
-        .google-btn {
-            width: 100%;
-            padding: 14px;
-            background: white;
-            color: #333;
-            border: 2px solid #ddd;
-            border-radius: 50px;
-            font-size: 1em;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .google-btn:hover {
-            border-color: #0f3460;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .google-icon {
-            width: 20px;
-            height: 20px;
-        }
-
-        .forgot-password {
-            text-align: right;
-            margin-top: -10px;
-            margin-bottom: 15px;
-        }
-
-        .forgot-password a {
-            color: #0f3460;
-            text-decoration: none;
-            font-size: 0.9em;
-            font-weight: 500;
-        }
-
-        .forgot-password a:hover {
-            text-decoration: underline;
-        }
-
-        .terms-text {
-            font-size: 0.85em;
-            color: #666;
-            text-align: center;
-            margin-top: 20px;
-            line-height: 1.6;
-        }
-
-        .terms-text a {
-            color: #0f3460;
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(5px);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-        }
-
-        .modal-overlay.show {
-            display: flex;
-        }
-
-        .modal {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            max-width: 450px;
-            width: 90%;
-            overflow: hidden;
-            animation: modalSlideDown 0.3s ease;
-        }
-
-        @keyframes modalSlideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-50px) scale(0.9);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        .modal-header {
-            padding: 25px 30px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            border-bottom: 1px solid #e0e0e0;
-        }
-
-        .modal-header.error {
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-            color: white;
-        }
-
-        .modal-header.success {
-            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
-            color: white;
-        }
-
-        .modal-header.info {
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-            color: white;
-        }
-
-        .modal-header.warning {
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-            color: white;
-        }
-
-        .modal-icon {
-            font-size: 2em;
-        }
-
-        .modal-title {
-            font-size: 1.4em;
-            font-weight: 700;
-            margin: 0;
-        }
-
-        .modal-body {
-            padding: 30px;
-        }
-
-        .modal-message {
-            font-size: 1.05em;
-            line-height: 1.6;
-            color: #333;
-            margin-bottom: 25px;
-        }
-
-        .modal-buttons {
-            display: flex;
-            gap: 15px;
-            justify-content: flex-end;
-        }
-
-        .modal-btn {
-            padding: 12px 30px;
-            border: none;
-            border-radius: 50px;
-            font-size: 1em;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .modal-btn-primary {
-            background: linear-gradient(135deg, #0f3460 0%, #16213e 100%);
-            color: white;
-        }
-
-        .modal-btn-secondary {
-            background: #e0e0e0;
-            color: #666;
-        }
-
-        .modal-btn-danger {
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-            color: white;
-        }
-
-        .verification-input-group {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            margin: 20px 0;
-        }
-
-        .verification-input {
-            width: 50px;
-            height: 50px;
-            text-align: center;
-            font-size: 1.5em;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-        }
-
-        .verification-input:focus {
-            outline: none;
-            border-color: #0f3460;
-            box-shadow: 0 0 0 3px rgba(15, 52, 96, 0.1);
-        }
-
-        .dashboard-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            display: none;
-            background: #f5f7fa;
-        }
-
-        .dashboard-container.active {
-            display: flex;
-        }
-
-        .sidebar {
-            width: 260px;
-            background: linear-gradient(180deg, #0f3460 0%, #16213e 100%);
-            color: white;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .sidebar-header {
-            padding: 30px 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .sidebar-header h1 {
-            font-size: 1.8em;
-            font-weight: 700;
-        }
-
-        .sidebar-nav {
-            flex: 1;
-            padding: 20px 0;
-        }
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-            padding: 15px 25px;
-            color: rgba(255, 255, 255, 0.8);
-            transition: all 0.3s ease;
-            cursor: pointer;
-            border-left: 3px solid transparent;
-        }
-
-        .nav-item:hover, .nav-item.active {
-            background: rgba(255, 255, 255, 0.15);
-            color: white;
-            border-left-color: #4a90e2;
-        }
-
-        .nav-item i {
-            font-size: 1.3em;
-            width: 30px;
-        }
-
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .top-bar {
-            background: white;
-            padding: 20px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-        }
-
-        .search-bar {
-            display: flex;
-            align-items: center;
-            background: #f5f7fa;
-            padding: 10px 20px;
-            border-radius: 25px;
-            width: 400px;
-        }
-
-        .search-bar input {
-            border: none;
-            background: transparent;
-            outline: none;
-            font-size: 1em;
-            width: 100%;
-            margin-left: 10px;
-        }
-
-        .user-info {
-            position: relative;
-        }
-
-        .user-menu-trigger {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
-            padding: 8px 15px;
-            border-radius: 25px;
-            transition: all 0.3s ease;
-        }
-
-        .user-menu-trigger:hover {
-            background: #f5f7fa;
-        }
-
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #0f3460, #4a90e2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-        }
-
-        .user-details {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .user-details .name {
-            font-weight: 600;
-            color: #333;
-        }
-
-        .user-details .email {
-            font-size: 0.8em;
-            color: #666;
-        }
-
-        .user-dropdown {
-            position: absolute;
-            top: 100%;
-            right: 0;
-            margin-top: 10px;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-            min-width: 220px;
-            display: none;
-        }
-
-        .user-dropdown.show {
-            display: block;
-        }
-
-        .dropdown-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 14px 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .dropdown-item:hover {
-            background: #f5f7fa;
-        }
-
-        .dropdown-item.logout {
-            color: #ef4444;
-            border-top: 1px solid #f0f0f0;
-        }
-
-        .content-area {
-            flex: 1;
-            padding: 40px;
-            overflow-y: auto;
-        }
-
-        .page-header h1 {
-            font-size: 2em;
-            color: #333;
-            margin-bottom: 10px;
-        }
-
-        .quote-container {
-            background: linear-gradient(135deg, #0f3460 0%, #16213e 100%);
-            color: white;
-            padding: 40px;
-            border-radius: 20px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            margin: 30px 0;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .quote-container::before {
-            content: '"';
-            position: absolute;
-            top: -20px;
-            left: 20px;
-            font-size: 120px;
-            opacity: 0.1;
-            font-family: Georgia, serif;
-        }
-
-        .quote-text {
-            font-size: 1.8em;
-            font-style: italic;
-            line-height: 1.6;
-            margin-bottom: 20px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .quote-author {
-            font-size: 1.2em;
-            opacity: 0.9;
-            font-weight: 600;
-        }
-
-        .refresh-quote-btn {
-            margin-top: 25px;
-            padding: 12px 30px;
-            background: rgba(255, 255, 255, 0.2);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            color: white;
-            border-radius: 50px;
-            cursor: pointer;
-            font-size: 1em;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .refresh-quote-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
-        }
-
-        .dashboard-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-top: 30px;
-        }
-
-        .stat-card {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .stat-card i {
-            font-size: 2.5em;
-            color: #0f3460;
-            margin-bottom: 15px;
-        }
-
-        .stat-card h3 {
-            font-size: 2em;
-            color: #333;
-            margin-bottom: 5px;
-        }
-
-        .stat-card p {
-            color: #666;
-            font-size: 0.95em;
-        }
-
-        .technique-card, .help-card {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-        }
-
-        .technique-card h3, .help-card h3 {
-            color: #0f3460;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .technique-card p, .help-card p {
-            color: #666;
-            line-height: 1.6;
-        }
-
-        .assignment-card, .exam-card {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            border-left: 4px solid #0f3460;
-        }
-
-        .assignment-card h4, .exam-card h4 {
-            color: #333;
-            margin-bottom: 10px;
-        }
-
-        .todo-item {
-            background: white;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            border: 2px solid #e0e0e0;
-            transition: all 0.3s ease;
-        }
-
-        .todo-item:hover {
-            border-color: #0f3460;
-        }
-
-        .todo-item.completed {
-            opacity: 0.6;
-            text-decoration: line-through;
-        }
-
-        .todo-checkbox {
-            width: 24px;
-            height: 24px;
-            cursor: pointer;
-        }
-
-        .todo-text {
-            flex: 1;
-            font-size: 1.05em;
-            color: #333;
-        }
-
-        .todo-delete {
-            color: #ef4444;
-            cursor: pointer;
-            padding: 8px 12px;
-            border-radius: 6px;
-            transition: all 0.3s ease;
-        }
-
-        .todo-delete:hover {
-            background: #fef2f2;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                flex-direction: column;
-            }
-            .welcome-panel {
-                padding: 30px 20px;
-            }
-            .search-bar {
-                width: 200px;
-            }
-            .quote-text {
-                font-size: 1.3em;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="common-style.css">
+    <link rel="stylesheet" href="istyle.css">
+    <link rel="stylesheet" href="aichatbot.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 </head>
 <body>
     <div class="modal-overlay" id="modalOverlay" onclick="closeModalOnOverlay(event)">
@@ -1083,32 +152,33 @@
             <div class="sidebar-header">
                 <h1>Edu-Gram</h1>
             </div>
+            <!-- Replace the navigation section in your index.html with this: -->
             <nav class="sidebar-nav">
                 <div class="nav-item active" onclick="switchPage('home')">
                     <i class="fas fa-home"></i>
                     <span>Home</span>
                 </div>
-                <div class="nav-item" onclick="switchPage('assignments')">
+                <div class="nav-item" onclick="window.location.href='Assignment.php'">
                     <i class="fas fa-tasks"></i>
                     <span>Assignments</span>
                 </div>
-                <div class="nav-item" onclick="switchPage('exams')">
+                <div class="nav-item" onclick="window.location.href='exam_list.php'">
                     <i class="fas fa-graduation-cap"></i>
                     <span>Exams</span>
                 </div>
-                <div class="nav-item" onclick="switchPage('techniques')">
+                <div class="nav-item" onclick="window.location.href='Techniques.php'">
                     <i class="fas fa-lightbulb"></i>
                     <span>Techniques</span>
                 </div>
-                <div class="nav-item" onclick="switchPage('pomodoro')">
+                <div class="nav-item" onclick="window.location.href='pomodoroindex.php'">
                     <i class="fas fa-clock"></i>
                     <span>Pomodoro Timer</span>
                 </div>
-                <div class="nav-item" onclick="switchPage('todo')">
+                <div class="nav-item" onclick="window.location.href='to-dolist.php'">
                     <i class="fas fa-list-check"></i>
                     <span>To-Do List</span>
                 </div>
-                <div class="nav-item" onclick="switchPage('help')">
+                <div class="nav-item" onclick="window.location.href='help.php'">
                     <i class="fas fa-question-circle"></i>
                     <span>Help</span>
                 </div>
@@ -1116,38 +186,34 @@
         </aside>
         <main class="main-content">
             <header class="top-bar">
-                <div class="search-bar">
-                    <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Search...">
-                </div>
-                <div class="user-info">
-                    <div class="user-menu-trigger" onclick="toggleUserDropdown()">
-                        <div class="user-avatar">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <div class="user-details">
-                            <span class="name" id="userName">User</span>
-                            <span class="email" id="userEmail">user@email.com</span>
-                        </div>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="user-dropdown" id="userDropdown">
-                        <div class="dropdown-item" onclick="switchPage('profile')">
-                            <i class="fas fa-user"></i>
-                            <span>Profile</span>
-                        </div>
-                        <div class="dropdown-item logout" onclick="handleLogout()">
-                            <i class="fas fa-sign-out-alt"></i>
-                            <span>Logout</span>
-                        </div>
-                    </div>
-                </div>
-            </header>
+    <div class="user-info">
+        <div class="user-menu-trigger" onclick="toggleUserDropdown()">
+            <div class="user-avatar">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="user-details">
+                <span class="name" id="userName">User</span>
+                <span class="email" id="userEmail">user@email.com</span>
+            </div>
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="user-dropdown" id="userDropdown">
+            <div class="dropdown-item" onclick="switchPage('profile')">
+                <i class="fas fa-user"></i>
+                <span>Profile</span>
+            </div>
+            <div class="dropdown-item logout" onclick="handleLogout()">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </div>
+        </div>
+    </div>
+</header>
             <div class="content-area" id="contentArea">
             </div>
         </main>
     </div>
-
+    
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script>
         let currentUser = null;
@@ -1351,7 +417,7 @@
             const name = input.value;
             const messageDiv = document.getElementById('nameValidationMessage');
             
-            // Remove any non-alphabetic characters (except spaces)
+            
             const nameRegex = /^[a-zA-Z\s]*$/;
             if (!nameRegex.test(name)) {
                 input.value = name.replace(/[^a-zA-Z\s]/g, '');
@@ -1362,14 +428,14 @@
                 return;
             }
             
-            // Clear validation if empty
+           
             if (!name.trim()) {
                 input.classList.remove('error', 'success');
                 messageDiv.className = 'name-validation-message';
                 return;
             }
             
-            // Check if valid name format
+            
             const validNameRegex = /^[a-zA-Z]+(\s[a-zA-Z]+)*$/;
             if (name.trim().length < 2) {
                 input.classList.add('error');
@@ -1418,7 +484,7 @@
         }
 
         function initGoogleSignIn() {
-            // Not needed anymore - using server-side OAuth flow
+            
             console.log('Google Sign-In initialized');
         }
 
@@ -1450,7 +516,7 @@
         }*/
 
         function handleGoogleSignIn() {
-            // Redirect to Google OAuth flow
+            
             window.location.href = 'https://accounts.google.com/o/oauth2/v2/auth?' + new URLSearchParams({
                 client_id: '1090943248108-chlg9pcpifafaeg2q1ipdd9hb93kjleq.apps.googleusercontent.com',
                 redirect_uri: 'http://localhost/edugram/google-callback.php',
@@ -1877,7 +943,7 @@
                     localStorage.setItem('user', JSON.stringify(data.user));
                     showModal('success', 'Success!', 'Login successful!');
                     setTimeout(() => {
-                        window.location.reload(); // This is fine, keeps existing behavior
+                        window.location.reload(); 
                     }, 1000);
                 } else {
                     showModal('error', 'Login Failed', data.message || 'Invalid email or password');
@@ -1894,7 +960,7 @@
     
                 const name = document.getElementById('signupName').value.trim();
 
-                // Validate name contains only alphabets and spaces
+                
                 const validNameRegex = /^[a-zA-Z]+(\s[a-zA-Z]+)*$/;
                 if (!validNameRegex.test(name)) {
                     showModal('error', 'Invalid Name', 'Name should contain only letters and spaces (no numbers or special characters)');
@@ -1943,7 +1009,7 @@
                     return;
                 }
 
-                // ✅ NEW CODE STARTS HERE - Send to PHP backend
+                
                 const formData = {
                     name: name,
                     email: email,
@@ -2037,7 +1103,7 @@
                         <div class="stat-card">
                             <i class="fas fa-check-circle"></i>
                             <h3 id="todoCount">0</h3>
-                            <p>Completed Tasks</p>
+                            <p>Tasks To Do</p>
                         </div>
                     </div>
                 `,
@@ -2138,29 +1204,9 @@
                     <div class="page-header">
                         <h1>Profile 👤</h1>
                     </div>
-                    <div style="background: white; padding: 40px; border-radius: 15px; max-width: 600px; margin: 0 auto;">
-                        <div style="text-align: center; margin-bottom: 30px;">
-                            <div style="width: 120px; height: 120px; background: linear-gradient(135deg, #0f3460, #4a90e2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 3em; color: white;">
-                                <i class="fas fa-user"></i>
-                            </div>
-                            <h2>${currentUser.name}</h2>
-                            <p style="color: #666;">${currentUser.email}</p>
-                            ${currentUser.googleAuth ? '<p style="color: #22c55e; margin-top: 10px;"><i class="fab fa-google"></i> Connected with Google</p>' : ''}
-                        </div>
-                        <div style="border-top: 1px solid #e0e0e0; padding-top: 30px;">
-                            <h3 style="margin-bottom: 20px;">Account Information</h3>
-                            <div style="display: grid; gap: 15px;">
-                                <div style="padding: 15px; background: #f5f7fa; border-radius: 8px;">
-                                    <strong>Full Name:</strong> ${currentUser.name}
-                                </div>
-                                <div style="padding: 15px; background: #f5f7fa; border-radius: 8px;">
-                                    <strong>Email:</strong> ${currentUser.email}
-                                </div>
-                                <div style="padding: 15px; background: #f5f7fa; border-radius: 8px;">
-                                    <strong>Account Status:</strong> <span style="color: #22c55e;">✓ Verified</span>
-                                </div>
-                            </div>
-                        </div>
+                    <div id="profileContent" style="background: white; padding: 40px; border-radius: 15px; max-width: 800px; margin: 0 auto; text-align: center;">
+                        <i class="fas fa-spinner fa-spin" style="font-size: 3em; color: #0f3460;"></i>
+                        <p style="margin-top: 20px; color: #666;">Loading profile...</p>
                     </div>
                 `,
                 help: `
@@ -2194,26 +1240,37 @@
                 displayQuote();
                 updateDashboardStats();
             }
+            if (page === 'profile') loadProfileData();
             if (page === 'assignments') loadAssignments();
             if (page === 'exams') loadExams();
             if (page === 'todo') loadTodos();
             if (page === 'pomodoro') initPomodoro();
+
         }
 
         function updateDashboardStats() {
-            const assignmentCountEl = document.getElementById('assignmentCount');
-            const examCountEl = document.getElementById('examCount');
-            const todoCountEl = document.getElementById('todoCount');
-            
-            if (assignmentCountEl) {
-                assignmentCountEl.textContent = assignments.filter(a => !a.completed).length;
-            }
-            if (examCountEl) {
-                examCountEl.textContent = exams.length;
-            }
-            if (todoCountEl) {
-                todoCountEl.textContent = todos.filter(t => t.completed).length;
-            }
+            fetch('api/get-dashboard-stats.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const assignmentCountEl = document.getElementById('assignmentCount');
+                        const examCountEl = document.getElementById('examCount');
+                        const todoCountEl = document.getElementById('todoCount');
+                        
+                        if (assignmentCountEl) {
+                            assignmentCountEl.textContent = data.stats.pendingAssignments;
+                        }
+                        if (examCountEl) {
+                            examCountEl.textContent = data.stats.upcomingExams;
+                        }
+                        if (todoCountEl) {
+                            todoCountEl.textContent = data.stats.completedTodos;
+                        }
+                    } else {
+                        console.error('Stats error:', data.message);
+                    }
+                })
+                .catch(error => console.error('Error fetching stats:', error));
         }
 
         function handleLogout() {
@@ -2230,19 +1287,19 @@
                         fetch('api/logout.php')
                             .then(response => response.json())
                             .then(data => {
-                                // Clear localStorage
+                               
                                 localStorage.removeItem('user');
                                 localStorage.removeItem('isNewUser');
                                 
                                 currentUser = null;
                                 closeModal();
                                 
-                                // Force reload to show login page
+                                
                                 window.location.href = 'index.html';
                             })
                             .catch(error => {
                                 console.error('Logout error:', error);
-                                // Even if there's an error, clear everything and reload
+                                
                                 localStorage.clear();
                                 window.location.href = 'index.html';
                             });
@@ -2252,8 +1309,27 @@
         }
 
         window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const isNewGoogleUser = urlParams.get('newuser');
+            
+            if (isNewGoogleUser === 'true') {
+                
+                window.history.replaceState({}, document.title, window.location.pathname);
+                
+                window.location.href = 'questionnaire.html?google=true';
+                return;
+            }
+            const user = JSON.parse(localStorage.getItem('user'));
+            
+            if (user) {
+                
+                showDashboard(user);
+            } else {
+                
+                document.getElementById('loginContainer').classList.add('show');
+            }
+            
             initGoogleSignIn();
-            checkLoginStatus();
         };
 
         function checkLoginStatus() {
@@ -2274,7 +1350,7 @@
                 });
         }
 
-        let assignments = [];
+        
 
         function showAddAssignment() {
             const content = document.getElementById('modalContent');
@@ -2312,50 +1388,86 @@
                 return;
             }
 
-            assignments.push({ id: Date.now(), title, subject, due, completed: false });
-            closeModal();
-            loadAssignments();
-            showModal('success', 'Success!', 'Assignment added successfully!');
+            fetch('api/assignments.php', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    title: title,
+                    subject: subject,
+                    due_date: due
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    closeModal();
+                    loadAssignments();
+                    updateDashboardStats();
+                    showModal('success', 'Success!', 'Assignment added!');
+                }
+            });
         }
 
         function loadAssignments() {
             const container = document.getElementById('assignmentsList');
             if (!container) return;
 
-            if (assignments.length === 0) {
-                container.innerHTML = '<div style="background: white; padding: 40px; border-radius: 15px; text-align: center; color: #999;">No assignments yet. Click "Add Assignment" to get started!</div>';
-                return;
-            }
+            fetch('api/assignments.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const assignments = data.assignments;
+                        
+                        if (assignments.length === 0) {
+                            container.innerHTML = '<div style="background: white; padding: 40px; border-radius: 15px; text-align: center; color: #999;">No assignments yet!</div>';
+                            return;
+                        }
 
-            container.innerHTML = assignments.map(a => `
-                <div class="assignment-card">
-                    <h4>${a.title}</h4>
-                    <p><strong>Subject:</strong> ${a.subject}</p>
-                    <p><strong>Due:</strong> ${new Date(a.due).toLocaleDateString()}</p>
-                    <div style="margin-top: 15px; display: flex; gap: 10px;">
-                        <button class="btn" style="max-width: 150px; font-size: 0.9em;" onclick="toggleAssignmentComplete(${a.id})">
-                            ${a.completed ? '✓ Completed' : 'Mark Complete'}
-                        </button>
-                        <button class="btn" style="max-width: 150px; font-size: 0.9em; background: linear-gradient(135deg, #ef4444, #dc2626);" onclick="deleteAssignment(${a.id})">
-                            Delete
-                        </button>
-                    </div>
-                </div>
-            `).join('');
+                        container.innerHTML = assignments.map(a => `
+                            <div class="assignment-card">
+                                <h4>${a.title}</h4>
+                                <p><strong>Subject:</strong> ${a.subject}</p>
+                                <p><strong>Due:</strong> ${new Date(a.due_date).toLocaleDateString()}</p>
+                                <button class="btn" onclick="toggleAssignmentComplete(${a.id}, ${a.completed})">
+                                    ${a.completed ? '✓ Completed' : 'Mark Complete'}
+                                </button>
+                                <button class="btn" onclick="deleteAssignment(${a.id})">Delete</button>
+                            </div>
+                        `).join('');
+                    }
+                });
         }
 
-        function toggleAssignmentComplete(id) {
-            const assignment = assignments.find(a => a.id === id);
-            if (assignment) assignment.completed = !assignment.completed;
-            loadAssignments();
+        function toggleAssignmentComplete(id, currentStatus) {
+            fetch('api/assignments.php', {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    id: id,
+                    completed: currentStatus ? 0 : 1
+                })
+            })
+            .then(() => {
+                loadAssignments();
+                updateDashboardStats();
+            });
         }
 
         function deleteAssignment(id) {
-            assignments = assignments.filter(a => a.id !== id);
-            loadAssignments();
+            if (!confirm('Delete this assignment?')) return;
+            
+            fetch('api/assignments.php', {
+                method: 'DELETE',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ id: id })
+            })
+            .then(() => {
+                loadAssignments();
+                updateDashboardStats();
+            });
         }
 
-        let exams = [];
+        
 
         function showAddExam() {
             const content = document.getElementById('modalContent');
@@ -2391,46 +1503,71 @@
             const title = document.getElementById('examTitle').value;
             const subject = document.getElementById('examSubject').value;
             const date = document.getElementById('examDate').value;
-            const time = document.getElementById('examTime').value;
 
-            if (!title || !subject || !date || !time) {
+            if (!title || !subject || !date) {
                 showModal('error', 'Missing Information', 'Please fill in all fields');
                 return;
             }
 
-            exams.push({ id: Date.now(), title, subject, date, time });
-            closeModal();
-            loadExams();
-            showModal('success', 'Success!', 'Exam added successfully!');
+            fetch('api/exams.php', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    title: title,
+                    subject: subject,
+                    exam_date: date
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    closeModal();
+                    loadExams();
+                    updateDashboardStats();
+                    showModal('success', 'Success!', 'Exam added!');
+                }
+            });
         }
 
         function loadExams() {
             const container = document.getElementById('examsList');
             if (!container) return;
 
-            if (exams.length === 0) {
-                container.innerHTML = '<div style="background: white; padding: 40px; border-radius: 15px; text-align: center; color: #999;">No exams scheduled. Click "Add Exam" to get started!</div>';
-                return;
-            }
+            fetch('api/exams.php')  
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const exams = data.exams;
+                        
+                        if (exams.length === 0) {
+                            container.innerHTML = '<div style="background: white; padding: 40px; border-radius: 15px; text-align: center; color: #999;">No exams scheduled!</div>';
+                            return;
+                        }
 
-            container.innerHTML = exams.map(e => `
-                <div class="exam-card">
-                    <h4>${e.title}</h4>
-                    <p><strong>Subject:</strong> ${e.subject}</p>
-                    <p><strong>Date:</strong> ${new Date(e.date).toLocaleDateString()}</p>
-                    <p><strong>Time:</strong> ${e.time}</p>
-                    <div style="margin-top: 15px;">
-                        <button class="btn" style="max-width: 150px; font-size: 0.9em; background: linear-gradient(135deg, #ef4444, #dc2626);" onclick="deleteExam(${e.id})">
-                            Delete
-                        </button>
-                    </div>
-                </div>
-            `).join('');
+                        container.innerHTML = exams.map(e => `
+                            <div class="exam-card">
+                                <h4>${e.title}</h4>
+                                <p><strong>Subject:</strong> ${e.subject}</p>
+                                <p><strong>Date:</strong> ${new Date(e.exam_date).toLocaleDateString()}</p>
+                                <button class="btn" onclick="deleteExam(${e.id})">Delete</button>
+                            </div>
+                        `).join('');
+                    }
+                });
         }
 
         function deleteExam(id) {
-            exams = exams.filter(e => e.id !== id);
-            loadExams();
+            if (!confirm('Delete this exam?')) return;
+            
+            fetch('api/exams.php', {
+                method: 'DELETE',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ id: id })
+            })
+            .then(() => {
+                loadExams();
+                updateDashboardStats();
+            });
         }
 
         let pomodoroTimer = null;
@@ -2521,49 +1658,75 @@
             oscillator.stop(audioContext.currentTime + 0.5);
         }
 
-        let todos = [];
+        
 
         function addTodo() {
             const input = document.getElementById('todoInput');
             const text = input.value.trim();
             
             if (!text) {
-                showModal('error', 'Empty Task', 'Please enter a task description');
+                showModal('error', 'Empty Task', 'Please enter a task');
                 return;
             }
             
-            todos.push({ id: Date.now(), text, completed: false });
-            input.value = '';
-            loadTodos();
+            fetch('api/todos.php', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ text: text })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    input.value = '';
+                    loadTodos();
+                    updateDashboardStats();
+                }
+            });
         }
-
         function loadTodos() {
             const container = document.getElementById('todoList');
             if (!container) return;
             
-            if (todos.length === 0) {
-                container.innerHTML = '<div style="text-align: center; color: #999; padding: 40px;">No tasks yet. Add one above!</div>';
-                return;
-            }
-            
-            container.innerHTML = todos.map(todo => `
-                <div class="todo-item ${todo.completed ? 'completed' : ''}">
-                    <input type="checkbox" class="todo-checkbox" ${todo.completed ? 'checked' : ''} onchange="toggleTodo(${todo.id})">
-                    <span class="todo-text">${todo.text}</span>
-                    <i class="fas fa-trash todo-delete" onclick="deleteTodo(${todo.id})"></i>
-                </div>
-            `).join('');
+            fetch('api/todos.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const todos = data.todos;
+                        
+                        if (todos.length === 0) {
+                            container.innerHTML = '<div style="text-align: center; color: #999; padding: 40px;">No tasks yet!</div>';
+                            return;
+                        }
+                        
+                        container.innerHTML = todos.map(todo => `
+                            <div class="todo-item">
+                                <input type="checkbox" class="todo-checkbox">
+                                <span class="todo-text">${todo.text}</span>
+                                <i class="fas fa-trash todo-delete" onclick="deleteTodo(${todo.id})"></i>
+                            </div>
+                        `).join('');
+                    }
+                });
         }
 
-        function toggleTodo(id) {
+        function toggleTodo(id, currentStatus) {
             const todo = todos.find(t => t.id === id);
             if (todo) todo.completed = !todo.completed;
             loadTodos();
         }
 
         function deleteTodo(id) {
-            todos = todos.filter(t => t.id !== id);
-            loadTodos();
+            if (!confirm('Delete this task?')) return;
+            
+            fetch('api/todos.php', {
+                method: 'DELETE',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ id: id })
+            })
+            .then(() => {
+                loadTodos();
+                updateDashboardStats();
+            });
         }
 
         document.addEventListener('keypress', function(e) {
@@ -2571,6 +1734,234 @@
                 addTodo();
             }
         });
+        function loadProfileData() {
+    const user = JSON.parse(localStorage.getItem('user'));
+    
+    if (!user || !user.id) {
+        console.error('No user data found');
+        displayBasicProfile({ name: 'User', email: 'user@email.com' });
+        return;
+    }
+
+    fetch('api/get_profile.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_id: user.id })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success && data.profile) {
+            displayProfileData(data.profile);
+        } else {
+            console.error('Failed to load profile:', data.message);
+            displayBasicProfile(user);
+        }
+    })
+    .catch(error => {
+        console.error('Error loading profile:', error);
+        displayBasicProfile(user);
+    });
+}
+
+function displayProfileData(profile) {
+    const profileHTML = `
+        <div class="page-header">
+            <h1>Profile 👤</h1>
+        </div>
+        <div style="background: white; padding: 40px; border-radius: 15px; max-width: 800px; margin: 0 auto;">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <div class="profile-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <h2 style="margin: 0; color: #0f3460;">${profile.name}</h2>
+                <p style="color: #666; margin: 5px 0;">${profile.email}</p>
+                <p style="color: #22c55e; margin-top: 10px;">
+                    <i class="fas fa-check-circle"></i> Verified
+                </p>
+            </div>
+
+            <div class="profile-section">
+                <h3><i class="fas fa-user-circle"></i> Account Information</h3>
+                <div class="profile-info-grid">
+                    <div class="profile-info-item">
+                        <strong><i class="fas fa-signature"></i> Full Name:</strong>
+                        <span>${profile.name}</span>
+                    </div>
+                    <div class="profile-info-item">
+                        <strong><i class="fas fa-envelope"></i> Email:</strong>
+                        <span>${profile.email}</span>
+                    </div>
+                    ${profile.member_since ? `
+                    <div class="profile-info-item">
+                        <strong><i class="fas fa-calendar-alt"></i> Member Since:</strong>
+                        <span>${new Date(profile.member_since).toLocaleDateString('en-US', { 
+                            year: 'numeric', month: 'long', day: 'numeric' 
+                        })}</span>
+                    </div>
+                    ` : ''}
+                </div>
+            </div>
+
+            ${profile.questionnaire_completed ? `
+            <div class="profile-section">
+                <h3><i class="fas fa-graduation-cap"></i> Academic Information</h3>
+                <div class="profile-info-grid">
+                    <div class="profile-info-item">
+                        <strong><i class="fas fa-school"></i> Education Level:</strong>
+                        <span>${formatEducationLevel(profile.education_level)}</span>
+                    </div>
+                    <div class="profile-info-item">
+                        <strong><i class="fas fa-calendar-check"></i> Current Year:</strong>
+                        <span>Year ${profile.current_year}</span>
+                    </div>
+                    <div class="profile-info-item">
+                        <strong><i class="fas fa-book"></i> Major Subject:</strong>
+                        <span>${profile.major_subject}</span>
+                    </div>
+                    <div class="profile-info-item">
+                        <strong><i class="fas fa-clock"></i> Study Hours (Daily):</strong>
+                        <span>${formatStudyHours(profile.study_hours_daily)}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-section">
+                <h3><i class="fas fa-bullseye"></i> Goals & Challenges</h3>
+                <div class="profile-info-grid">
+                    <div class="profile-text-area">
+                        <strong><i class="fas fa-target"></i> Academic Goals:</strong>
+                        <p>${profile.goals || 'Not specified'}</p>
+                    </div>
+                    <div class="profile-text-area">
+                        <strong><i class="fas fa-exclamation-triangle"></i> Challenges:</strong>
+                        <p>${profile.challenges || 'None specified'}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="edit-profile-btn">
+                <button class="btn" onclick="goToQuestionnaire()" style="max-width: 200px;">
+                    <i class="fas fa-edit"></i> Edit Profile
+                </button>
+            </div>
+            ` : `
+            <div class="profile-section">
+                <div class="questionnaire-prompt">
+                    <i class="fas fa-clipboard-list"></i>
+                    <h3>Complete Your Profile</h3>
+                    <p>Complete the questionnaire to add more details to your profile.</p>
+                    <button class="btn" onclick="goToQuestionnaire()" style="max-width: 250px;">
+                        <i class="fas fa-pencil-alt"></i> Complete Questionnaire
+                    </button>
+                </div>
+            </div>
+            `}
+        </div>
+    `;
+
+    document.getElementById('contentArea').innerHTML = profileHTML;
+}
+
+function displayBasicProfile(user) {
+    const profileHTML = `
+        <div class="page-header">
+            <h1>Profile 👤</h1>
+        </div>
+        <div style="background: white; padding: 40px; border-radius: 15px; max-width: 600px; margin: 0 auto;">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <div class="profile-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <h2 style="margin: 0; color: #0f3460;">${user.name}</h2>
+                <p style="color: #666; margin: 5px 0;">${user.email}</p>
+                <p style="color: #22c55e; margin-top: 10px;">
+                    <i class="fas fa-check-circle"></i> Verified
+                </p>
+            </div>
+            <div class="profile-section">
+                <h3>Account Information</h3>
+                <div class="profile-info-grid">
+                    <div class="profile-info-item">
+                        <strong>Full Name:</strong> <span>${user.name}</span>
+                    </div>
+                    <div class="profile-info-item">
+                        <strong>Email:</strong> <span>${user.email}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="profile-section">
+                <div class="questionnaire-prompt">
+                    <i class="fas fa-clipboard-list"></i>
+                    <h3>Complete Your Profile</h3>
+                    <p>Complete the questionnaire to add more details to your profile.</p>
+                    <button class="btn" onclick="goToQuestionnaire()" style="max-width: 250px;">
+                        <i class="fas fa-pencil-alt"></i> Complete Questionnaire
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.getElementById('contentArea').innerHTML = profileHTML;
+}
+
+    function formatEducationLevel(level) {
+        const levels = {
+            'school': 'School',
+            'high_school': 'High School',
+            'bachelor': "Bachelor's Degree",
+            'masters': "Master's Degree",
+            'other': 'Other'
+        };
+        return levels[level] || level;
+    }
+
+    function formatStudyHours(hours) {
+        if (hours == 1) return '1-2 hours';
+        if (hours == 3) return '3-4 hours';
+        if (hours == 5) return '5-6 hours';
+        if (hours >= 7) return '7+ hours';
+        return `${hours} hours`;
+    }
+
+    
+    function goToQuestionnaire() {
+
+        localStorage.setItem('editingProfile', 'true');
+        window.location.href = 'questionnaire.html';
+    }
+
+    
+    function editProfile() {
+        goToQuestionnaire();
+    }
+
+
     </script>
+    
+        <button class="chatbot-toggler" onclick="toggleChatbot()">
+            <span class="material-icons">chat</span>
+        </button>
+
+        <div class="chatbot-container" id="chatbot">
+            <div class="chatbot-header">
+                <h2>Virtual Assistant</h2> 
+                <span class="close-btn" onclick="toggleChatbot()">&times;</span>
+            </div>
+            
+            <ul class="chat-box">
+                <li class="chat incoming">
+                    <span class="material-icons">smart_toy</span>
+                    <p>Hello👋! I am your AI assistant. Ask me anything.</p>
+                </li>
+            </ul>
+
+            <div class="chat-input">
+                <textarea placeholder="Type a message..." required></textarea>
+                <span id="send-btn" class="material-icons">send</span>
+            </div>
+        </div>
+
+        <script src="aichatbot.js"></script>
 </body>
 </html>

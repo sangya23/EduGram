@@ -4,9 +4,7 @@ require_once 'api/email_config.php';
 
 $error = '';
 $success = '';
-$step = 'email'; // email, verify, reset
-
-// Check if OTP verification is being submitted
+$step = 'email'; 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['verify_otp'])) {
     $email = $_POST['email'] ?? '';
     $otp = $_POST['otp'] ?? '';
@@ -16,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['verify_otp'])) {
     } else {
         $conn = getDbConnection();
         
-        // Verify OTP
+        
         $stmt = $conn->prepare("SELECT id, expires_at, used FROM password_reset_tokens WHERE email = ? AND token = ? ORDER BY created_at DESC LIMIT 1");
         $stmt->bind_param("ss", $email, $otp);
         $stmt->execute();
@@ -35,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['verify_otp'])) {
                 $error = "This OTP has expired. Please request a new one.";
                 $step = 'email';
             } else {
-                // OTP is valid - show password reset form
+                
                 $step = 'reset';
                 $_SESSION['reset_email'] = $email;
                 $_SESSION['reset_token_id'] = $tokenData['id'];
@@ -47,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['verify_otp'])) {
     }
 }
 
-// Check if password reset is being submitted
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reset_password'])) {
     $password = $_POST['password'] ?? '';
     $confirmPassword = $_POST['confirm_password'] ?? '';
@@ -69,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reset_password'])) {
             $error = "Password must contain uppercase, lowercase, number and special character";
             $step = 'reset';
         } else {
-            // Update password
+           
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
             
             $conn = getDbConnection();
@@ -77,12 +75,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reset_password'])) {
             $stmt->bind_param("ss", $hashedPassword, $email);
             
             if ($stmt->execute()) {
-                // Mark token as used
+                
                 $stmt = $conn->prepare("UPDATE password_reset_tokens SET used = 1 WHERE id = ?");
                 $stmt->bind_param("i", $tokenId);
                 $stmt->execute();
                 
-                // Clear session
+            
                 unset($_SESSION['reset_email']);
                 unset($_SESSION['reset_token_id']);
                 
@@ -99,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reset_password'])) {
     }
 }
 
-// Handle email submission and OTP generation
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_otp'])) {
     $email = trim($_POST['email'] ?? '');
     
@@ -110,7 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_otp'])) {
     } else {
         $conn = getDbConnection();
         
-        // Check if user exists
+      
         $stmt = $conn->prepare("SELECT id, name, password FROM users WHERE email = ?");
         $stmt->bind_param("s", $email);
         $stmt->execute();
@@ -119,20 +117,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_otp'])) {
         if ($result->num_rows > 0) {
             $user = $result->fetch_assoc();
             
-            // Check if user has a password
+            
             if (empty($user['password'])) {
                 $error = "This account was created with Google. Please use 'Continue with Google' to sign in.";
             } else {
-                // Generate 6-digit OTP
+                
                 $otp = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
                 $expiresAt = date('Y-m-d H:i:s', strtotime('+15 minutes'));
                 
-                // Store OTP in database
+                
                 $stmt = $conn->prepare("INSERT INTO password_reset_tokens (email, token, expires_at) VALUES (?, ?, ?)");
                 $stmt->bind_param("sss", $email, $otp, $expiresAt);
                 $stmt->execute();
                 
-                // Send OTP via email
+                
                 $emailResult = sendOTPEmail($email, $otp, $user['name']);
                 
                 if ($emailResult['success']) {
@@ -144,7 +142,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_otp'])) {
                 }
             }
         } else {
-            // Don't reveal if email doesn't exist for security
+         
             $success = "If an account exists with this email, an OTP has been sent.";
             $step = 'verify';
             $_SESSION['reset_email_temp'] = $email;

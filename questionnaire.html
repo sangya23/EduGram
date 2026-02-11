@@ -93,121 +93,217 @@
     </div>
 
     <script>
-            // Check if user is authenticated
-            const user = JSON.parse(localStorage.getItem("user") || "null");
-            const isNewUser = localStorage.getItem("isNewUser");
+    (function() {
+        
+        let user = JSON.parse(localStorage.getItem("user") || "null");
+        const isNewUser = localStorage.getItem("isNewUser");
+        const isEditing = localStorage.getItem("editingProfile");
 
-            // If not a new user or no user data, redirect to index
-            if (!user || isNewUser !== "true") {
-                // Check session as fallback
-                fetch('api/check-session.php')
-                    .then(response => response.json())
-                    .then(data => {
-                        if (!data.logged_in) {
-                            window.location.href = "index.html";
-                        }
-                    })
-                    .catch(() => {
+        console.log("=== QUESTIONNAIRE LOADED ===");
+        console.log("User:", user);
+        console.log("isNewUser:", isNewUser);
+        console.log("isEditing:", isEditing);
+        
+        if (!user) {
+            console.log("No user, checking session...");
+            fetch("api/check-session.php")
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.logged_in) {
                         window.location.href = "index.html";
-                    });
-            }
-
-            // Update progress bar as user fills form
-            const form = document.getElementById('questionnaireForm');
-            const progressBar = document.getElementById('progressBar');
-            const totalFields = 5; // education, year, major, study hours, goals (5 required fields)
-
-            form.addEventListener('input', updateProgress);
-
-            function updateProgress() {
-                let filledFields = 0;
-                
-                // Check each required field
-                if (document.getElementById('educationLevel').value) filledFields++;
-                if (document.getElementById('currentYear').value) filledFields++;
-                if (document.getElementById('majorSubject').value) filledFields++;
-                if (document.querySelector('input[name="studyHours"]:checked')) filledFields++;
-                if (document.getElementById('goals').value.trim()) filledFields++;
-                
-                const progress = (filledFields / totalFields) * 100;
-                progressBar.style.width = progress + '%';
-            }
-
-            // Handle form submission
-            form.addEventListener('submit', async function(e) {
-                e.preventDefault();
-                
-                const submitBtn = document.getElementById('submitBtn');
-                submitBtn.disabled = true;
-                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
-
-                // Gather form data
-                const formData = {
-                    user_id: user.id,
-                    education_level: document.getElementById('educationLevel').value,
-                    current_year: parseInt(document.getElementById('currentYear').value),
-                    major_subject: document.getElementById('majorSubject').value,
-                    study_hours_daily: parseInt(document.querySelector('input[name="studyHours"]:checked').value),
-                    goals: document.getElementById('goals').value,
-                    challenges: document.getElementById('challenges').value || 'None specified'
-                };
-
-                try {
-                    const response = await fetch('api/save_questionnaire.php', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(formData)
-                    });
-
-                    const result = await response.json();
-
-                    if (result.success) {
-                        showAlert('success', 'Profile completed successfully! Loading dashboard...');
-                        
-                        // IMPORTANT: Clear the new user flag so index.html shows dashboard
-                        localStorage.removeItem("isNewUser");
-                        
-                        // Redirect to index.html which will auto-show dashboard after 1.5 seconds
-                        setTimeout(() => {
-                            window.location.href = 'index.html';
-                        }, 1500);
-
                     } else {
-                        showAlert('error', result.message || 'Failed to save profile. Please try again.');
-                        submitBtn.disabled = false;
-                        submitBtn.innerHTML = '<i class="fas fa-check"></i> Complete Profile';
+                        user = {
+                            id: data.user_id,
+                            name: data.name,
+                            email: data.email
+                        };
+                        localStorage.setItem("user", JSON.stringify(user));
+                        window.location.reload();
                     }
-                } catch (error) {
-                    console.error('Error:', error);
-                    showAlert('error', 'An error occurred. Please try again.');
-                    submitBtn.disabled = false;
-                    submitBtn.innerHTML = '<i class="fas fa-check"></i> Complete Profile';
-                }
-            });
+                })
+                .catch(() => {
+                    window.location.href = "index.html";
+                });
+            return;
+        }
 
-            function showAlert(type, message) {
-                const alertBox = document.getElementById('alertBox');
-                alertBox.className = `alert ${type} show`;
-                alertBox.textContent = message;
+        
+        const isEditingMode = isEditing === "true";
+        console.log("Mode:", isEditingMode ? "EDITING" : "NEW USER");
+
+       
+        if (isEditingMode && user.id) {
+            console.log("Loading profile data for editing...");
+            
+            fetch("api/get_profile.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ user_id: user.id })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Profile data:", data);
                 
-                setTimeout(() => {
-                    alertBox.classList.remove('show');
-                }, 5000);
-            }
-
-            function skipQuestionnaire() {
-                if (confirm('Are you sure you want to skip? You can complete your profile later from the Profile page.')) {
-                    // Clear the new user flag
-                    localStorage.removeItem("isNewUser");
-                    // Redirect to dashboard
-                    window.location.href = 'index.html';
+                if (data.success && data.profile && data.profile.questionnaire_completed) {
+                    const p = data.profile;
+                    
+                 
+                    if (p.education_level) {
+                        document.getElementById("educationLevel").value = p.education_level;
+                    }
+                    if (p.current_year) {
+                        document.getElementById("currentYear").value = p.current_year;
+                    }
+                    if (p.major_subject) {
+                        document.getElementById("majorSubject").value = p.major_subject;
+                    }
+                    if (p.study_hours_daily) {
+                        const radio = document.querySelector('input[name="studyHours"][value="' + p.study_hours_daily + '"]');
+                        if (radio) radio.checked = true;
+                    }
+                    if (p.goals) {
+                        document.getElementById("goals").value = p.goals;
+                    }
+                    if (p.challenges) {
+                        document.getElementById("challenges").value = p.challenges;
+                    }
+                    
+                    
+                    document.querySelector(".questionnaire-header h1").textContent = "✏️ Edit Your Profile";
+                    document.querySelector(".questionnaire-header p").textContent = "Update your learning preferences";
+                    document.getElementById("submitBtn").innerHTML = '<i class="fas fa-save"></i> Save Changes';
+                    document.querySelector(".skip-link a").textContent = "Cancel";
+                    
+                    updateProgress();
+                    console.log("Form pre-filled successfully");
                 }
-            }
+            })
+            .catch(error => {
+                console.error("Error loading profile:", error);
+            });
+        }
 
-            // Initialize progress
-            updateProgress();
+        
+        const form = document.getElementById("questionnaireForm");
+        const progressBar = document.getElementById("progressBar");
+        const totalFields = 5;
+
+        form.addEventListener("input", updateProgress);
+
+        function updateProgress() {
+            let filledFields = 0;
+            
+            if (document.getElementById("educationLevel").value) filledFields++;
+            if (document.getElementById("currentYear").value) filledFields++;
+            if (document.getElementById("majorSubject").value) filledFields++;
+            if (document.querySelector('input[name="studyHours"]:checked')) filledFields++;
+            if (document.getElementById("goals").value.trim()) filledFields++;
+            
+            const progress = (filledFields / totalFields) * 100;
+            progressBar.style.width = progress + "%";
+        }
+
+        
+        form.addEventListener("submit", async function(e) {
+            e.preventDefault();
+            
+            console.log("📝 Form submitted!");
+            
+            const submitBtn = document.getElementById("submitBtn");
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+            const formData = {
+                user_id: user.id,
+                education_level: document.getElementById("educationLevel").value,
+                current_year: parseInt(document.getElementById("currentYear").value),
+                major_subject: document.getElementById("majorSubject").value,
+                study_hours_daily: parseInt(document.querySelector('input[name="studyHours"]:checked').value),
+                goals: document.getElementById("goals").value,
+                challenges: document.getElementById("challenges").value || "None specified"
+            };
+
+            console.log("📤 Sending data:", formData);
+
+            try {
+                const response = await fetch("api/save_questionnaire.php", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(formData)
+                });
+
+                console.log("📥 Response status:", response.status);
+                
+                const result = await response.json();
+                console.log("📥 Response data:", result);
+
+                if (result.success) {
+                    console.log("✅ SUCCESS! Save was successful");
+                    
+                    const msg = isEditingMode 
+                        ? "Profile updated successfully! Returning to dashboard..."
+                        : "Profile completed successfully! Loading dashboard...";
+                    
+                    console.log("💬 Showing alert:", msg);
+                    showAlert("success", msg);
+                    
+                  
+                    console.log("🗑️ Clearing localStorage flags...");
+                    localStorage.removeItem("isNewUser");
+                    localStorage.removeItem("editingProfile");
+                    console.log("✅ Flags cleared");
+                    
+                    console.log("⏳ Waiting 1.5 seconds before redirect...");
+                    setTimeout(() => {
+                        console.log("🚀 REDIRECTING TO INDEX.HTML NOW!");
+                        window.location.href = "index.html";
+                    }, 1500);
+                } else {
+                    console.log("❌ FAILED! Server returned success: false");
+                    console.log("Error message:", result.message);
+                    
+                    showAlert("error", result.message || "Failed to save profile.");
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = isEditingMode 
+                        ? '<i class="fas fa-save"></i> Save Changes'
+                        : '<i class="fas fa-check"></i> Complete Profile';
+                }
+            } catch (error) {
+                console.error("❌ CATCH ERROR:", error);
+                showAlert("error", "An error occurred. Please try again.");
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = isEditingMode 
+                    ? '<i class="fas fa-save"></i> Save Changes'
+                    : '<i class="fas fa-check"></i> Complete Profile';
+            }
+        });
+
+        function showAlert(type, message) {
+            const alertBox = document.getElementById("alertBox");
+            alertBox.className = "alert " + type + " show";
+            alertBox.textContent = message;
+            
+            setTimeout(() => {
+                alertBox.classList.remove("show");
+            }, 5000);
+        }
+
+        window.skipQuestionnaire = function() {
+            const msg = isEditingMode 
+                ? "Cancel editing and return to dashboard?"
+                : "Are you sure you want to skip? You can complete your profile later.";
+            
+            if (confirm(msg)) {
+                console.log("Skipping - clearing flags and redirecting");
+                localStorage.removeItem("isNewUser");
+                localStorage.removeItem("editingProfile");
+                window.location.href = "index.html";
+            }
+        };
+
+        updateProgress();
+        console.log("=== QUESTIONNAIRE READY ===");
+    })();
     </script>
 </body>
 </html>

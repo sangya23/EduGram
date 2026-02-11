@@ -1,5 +1,5 @@
 <?php
-//session_start();  // ✅ ADD THIS - needed for $_SESSION to work
+session_start();  
 require_once 'api/db.php';
 require_once 'api/google_config.php';
 
@@ -10,7 +10,7 @@ if (!isset($_GET['code'])) {
 
 $code = $_GET['code'];
 
-// Exchange authorization code for access token
+
 $tokenData = [
     'code' => $code,
     'client_id' => GOOGLE_CLIENT_ID,
@@ -35,7 +35,7 @@ if (!isset($tokenInfo['access_token'])) {
     exit();
 }
 
-// Get user information
+
 $ch = curl_init(GOOGLE_USER_INFO_URL . '?access_token=' . $tokenInfo['access_token']);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
@@ -56,17 +56,20 @@ $googleId = $userInfo['id'];
 
 $conn = getDbConnection();
 
-// Check if user exists
 $stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
 $stmt->bind_param("s", $email);
 $stmt->execute();
 $result = $stmt->get_result();
 
+
+$redirectTo = $_SESSION['redirect_after_login'] ?? 'index.html';
+unset($_SESSION['redirect_after_login']);
+
 if ($result->num_rows > 0) {
-    // User exists - log them in
+   
     $user = $result->fetch_assoc();
     
-    // Update Google ID
+   
     $updateStmt = $conn->prepare("UPDATE users SET google_id = ? WHERE id = ?");
     $updateStmt->bind_param("si", $googleId, $user['id']);
     $updateStmt->execute();
@@ -76,7 +79,7 @@ if ($result->num_rows > 0) {
     $_SESSION['user_email'] = $email;
     $_SESSION['user_name'] = $name;
     
-    // ✅ FIXED: Existing user redirect with localStorage
+   
     echo "<!DOCTYPE html>
     <html>
     <head><title>Redirecting...</title></head>
@@ -87,13 +90,13 @@ if ($result->num_rows > 0) {
             name: " . json_encode($name) . ",
             email: " . json_encode($email) . "
         }));
-        window.location.href = 'index.html';
+        window.location.href = " . json_encode($redirectTo) . ";
     </script>
     </body>
     </html>";
     exit();
 } else {
-    // New user - create account
+    
     $stmt = $conn->prepare("INSERT INTO users (email, name, google_id) VALUES (?, ?, ?)");
     $stmt->bind_param("sss", $email, $name, $googleId);
     
@@ -104,7 +107,7 @@ if ($result->num_rows > 0) {
         $_SESSION['user_email'] = $email;
         $_SESSION['user_name'] = $name;
         
-        // ✅ FIXED: New user redirect with localStorage
+      
         echo "<!DOCTYPE html>
         <html>
         <head><title>Redirecting...</title></head>

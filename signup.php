@@ -1,5 +1,5 @@
 <?php
-//session_start();
+
 header('Content-Type: application/json');
 
 require_once 'api/db.php';
@@ -20,13 +20,13 @@ if (empty($name) || empty($email) || empty($password)) {
     exit;
 }
 
-// Validate email
+
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     echo json_encode(['success' => false, 'message' => 'Invalid email format']);
     exit;
 }
 
-// Validate name (only letters and spaces)
+
 if (!preg_match('/^[a-zA-Z]+(\s[a-zA-Z]+)*$/', $name)) {
     echo json_encode(['success' => false, 'message' => 'Name should contain only letters and spaces']);
     exit;
@@ -35,7 +35,7 @@ if (!preg_match('/^[a-zA-Z]+(\s[a-zA-Z]+)*$/', $name)) {
 try {
     $conn = getDbConnection();
     
-    // Check if email already exists
+   
     $stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
@@ -46,17 +46,17 @@ try {
         exit;
     }
     
-    // Hash password
+   
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
     
-    // Insert new user
+    
     $stmt = $conn->prepare("INSERT INTO users (name, email, password, created_at) VALUES (?, ?, ?, NOW())");
     $stmt->bind_param("sss", $name, $email, $hashedPassword);
     
     if ($stmt->execute()) {
         $userId = $conn->insert_id;
         
-        // Set session
+        
         $_SESSION['user_id'] = $userId;
         $_SESSION['user_name'] = $name;
         $_SESSION['user_email'] = $email;
